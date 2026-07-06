@@ -1,0 +1,15 @@
+brand:
+  name: "곰곰이의 경제공부"
+  handle: "@gomgomi.economy"
+  disclaimer: "※ 정보 제공 목적이며 특정 상품 추천이 아닙니다."
+claude:
+  model: "claude-sonnet-5"
+  max_tokens: 8000
+feeds:  # 시사 소재 수집용 RSS
+  - https://www.hankyung.com/feed/economy
+  - https://www.mk.co.kr/rss/30100041/
+schedule:
+  posts_per_day: 1
+cards:
+  count_min: 6
+  count_max: 8
