@@ -1,0 +1,32 @@
+name: publish
+on:
+  schedule:
+    - cron: "0 9 * * *"    # 18:00 KST
+    - cron: "30 9 * * *"   # 18:30 KST (hosting 건 게시용 2차 실행)
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install requests pyyaml
+      - name: Process approvals + publish
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_BRANCH: main
+        run: python src/main_publish.py
+      - name: Commit published images + state
+        run: |
+          git config user.name "gomgomi-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/ published/
+          git diff --cached --quiet || git commit -m "publish: $(date +%F)"
+          git push
