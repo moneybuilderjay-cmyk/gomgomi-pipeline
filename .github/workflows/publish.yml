@@ -27,6 +27,6 @@ jobs:
         run: |
           git config user.name "gomgomi-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/ published/
-          git diff --cached --quiet || git commit -m "publish: $(date +%F)"
-          git push
+          mkdir -p data published
+          git add -A data published || true
+          git diff --cached --quiet || (git commit -m "publish: $(date +%F)" && git push)
