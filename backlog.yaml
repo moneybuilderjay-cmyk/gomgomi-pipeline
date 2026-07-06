@@ -1,22 +1,22 @@
-# 주제 백로그 — 위에서부터 순서대로 소진. done: true 로 표시됨
 topics:
-  - id: t001
-    title: "ISA 계좌에 3년 넣으면 얼마가 될까?"
-    angle: "월 30만원 적립 시뮬레이션, 세금 혜택 비교"
-    pillar: education
-  - id: t002
-    title: "미국주식, 첫 1주는 뭘 사야 할까?"
-    angle: "지수 ETF부터 시작하는 이유, S&P500 소개"
-    pillar: education
-  - id: t003
-    title: "월급 300, 통장 쪼개기 정석"
-    angle: "50/30/20 법칙을 한국 현실에 맞게"
-    pillar: guide
-  - id: t004
-    title: "예적금 vs ETF, 사회초년생의 선택은?"
-    angle: "목적별로 나누는 법 (비상금/단기/장기)"
-    pillar: education
-  - id: t005
-    title: "연금저축펀드, 세액공제 얼마나 받을까?"
-    angle: "연말정산 환급 계산 예시"
-    pillar: education
+- id: t001
+  title: ISA 계좌에 3년 넣으면 얼마가 될까?
+  angle: 월 30만원 적립 시뮬레이션, 세금 혜택 비교
+  pillar: education
+  done: true
+- id: t002
+  title: 미국주식, 첫 1주는 뭘 사야 할까?
+  angle: 지수 ETF부터 시작하는 이유, S&P500 소개
+  pillar: education
+- id: t003
+  title: 월급 300, 통장 쪼개기 정석
+  angle: 50/30/20 법칙을 한국 현실에 맞게
+  pillar: guide
+- id: t004
+  title: 예적금 vs ETF, 사회초년생의 선택은?
+  angle: 목적별로 나누는 법 (비상금/단기/장기)
+  pillar: education
+- id: t005
+  title: 연금저축펀드, 세액공제 얼마나 받을까?
+  angle: 연말정산 환급 계산 예시
+  pillar: education
