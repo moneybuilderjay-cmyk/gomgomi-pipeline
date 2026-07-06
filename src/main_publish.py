@@ -4,8 +4,10 @@ sys.path.insert(0, os.path.dirname(__file__))
 import state, approve, publish
 
 def main():
-    approve.process_updates()
+    results = approve.process_updates()
+    print(f"[publish] \ucf5c\ubc31 \ubc18\uc601: {results}")
     approved = state.get_items("approved")
+    print(f"[publish] \uc2b9\uc778 {len(approved)}\uac74, hosting {len(state.get_items('hosting'))}\uac74")
     just_copied = set()
     if not approved:
         print("게시할 승인 건 없음")
