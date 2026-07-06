@@ -50,8 +50,11 @@ def process_updates():
             status = "approved" if action == "approve" else "rejected"
             state.set_status(item_id, status)
             results[item_id] = status
-            _call("answerCallbackQuery", json={"callback_query_id": cq["id"],
-                  "text": f"{item_id} → {status}"})
+            try:  # 콜백이 오래되면 400 — 무시
+                _call("answerCallbackQuery", json={"callback_query_id": cq["id"],
+                      "text": f"{item_id} -> {status}"})
+            except Exception:
+                pass
     os.makedirs(os.path.dirname(offset_file), exist_ok=True)
     with open(offset_file, "w") as f:
         f.write(str(offset))
