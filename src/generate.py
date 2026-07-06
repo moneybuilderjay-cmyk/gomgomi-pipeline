@@ -48,7 +48,7 @@ def generate_content(topic, headlines):
         model=cfg["claude"]["model"], max_tokens=cfg["claude"]["max_tokens"],
         system=SYSTEM, messages=[{"role": "user", "content": user}],
     )
-    text = resp.content[0].text.strip()
+    text = "".join(b.text for b in resp.content if getattr(b, "type", "") == "text").strip()
     if text.startswith("```"):
         text = text.split("```")[1].lstrip("json").strip()
     data = json.loads(text)
