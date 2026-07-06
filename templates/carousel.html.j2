@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+{{ css }}
+.canvas { page-break-after: always; }
+.top-row { display: flex; justify-content: space-between; align-items: center; padding: 48px 60px 0; }
+.badge, .kicker, .hook { white-space: nowrap; }
+.handle { font-size: 28px; font-weight: 700; color: var(--c-muted); }
+.center { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 26px; }
+.center .kicker { margin-bottom: 36px; }
+.center .title-xl { font-size: 112px; line-height: 1.18; margin-bottom: 44px; }
+.center .hook { font-size: 36px; }
+.char-wrap { position: relative; display: flex; flex-direction: column; align-items: center; margin-top: 12px; }
+.char-wrap svg.char, .char-wrap > svg { width: 350px; height: 350px; position: relative; z-index: 1; }
+.char-wrap .ground { width: 430px; height: 48px; margin-top: -38px; }
+.spark { position: absolute; font-size: 58px; color: var(--c-accent); z-index: 2; text-shadow: 2px 2px 0 rgba(91,58,34,0.25); }
+.spark.s2 { color: var(--c-primary); font-size: 40px; }
+.cta-center { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 40px 80px 0; }
+.gift-card { background: var(--c-card); border: var(--stroke) solid var(--c-outline); border-radius: var(--radius-lg); box-shadow: var(--sticker-shadow); padding: 44px 56px; margin-top: 40px; }
+.gift-card .g-title { font-family: var(--font-title); font-size: 56px; color: var(--c-primary-deep); margin-bottom: 18px; }
+.gift-card .g-how { font-size: 36px; font-weight: 700; line-height: 1.5; }
+.gift-card .g-how b { color: var(--c-primary-deep); }
+.char-corner svg { width: 230px; height: 230px; }
+</style>
+</head>
+<body>
+{% macro hl_title(title, hl) -%}
+  {%- if hl and hl in title -%}
+    {{ title.replace(hl, '<span class="hl">' + hl + '</span>') | safe }}
+  {%- else -%}{{ title }}{%- endif -%}
+{%- endmacro %}
+{% set total = c.cards | length + 2 %}
+
+<!-- 표지 -->
+<div class="canvas">
+  <div class="top-row">
+    <span class="badge"><span class="dot"></span>{{ brand.name }}</span>
+    <span class="handle">{{ brand.handle }}</span>
+  </div>
+  <div class="center">
+    <span class="kicker">{{ c.kicker }}</span>
+    <h1 class="title-xl">{% for line in c.title_lines %}{{ hl_title(line, c.hl) }}{% if not loop.last %}<br>{% endif %}{% endfor %}</h1>
+    <div class="hook">{{ c.hook }}</div>
+    <div class="char-wrap">
+      <span class="spark" style="left:-64px; top:56px;">★</span>
+      <span class="spark s2" style="right:-58px; top:110px;">★</span>
+      {{ chars['coin'] | safe }}
+      <div class="ground"></div>
+    </div>
+  </div>
+  <div class="footer-bar"><span>새 콘텐츠</span><span>저장해두고 따라하기 →</span></div>
+</div>
+
+{% for card in c.cards %}
+{% set n = loop.index + 1 %}
+<div class="canvas">
+  <div class="top-row"><span class="badge"><span class="dot"></span>{{ brand.name }}</span><span class="page-no">{{ '%02d' % n }} / {{ '%02d' % total }}</span></div>
+  <div class="body-content">
+    <div class="section-kicker">{{ card.kicker }}</div>
+    <h2 class="section-title">{{ hl_title(card.title, card.hl) }}</h2>
+
+    {% if card.type == 'info' %}
+    <div class="info-card">
+      {% if card.heading %}<h3>{{ card.heading }}</h3>{% endif %}
+      {% for p in card.paras %}<p {% if not loop.first %}style="margin-top:24px;"{% endif %}>{{ p | safe }}</p>{% endfor %}
+    </div>
+
+    {% elif card.type == 'table' %}
+    <table class="vs-table">
+      <tr>{% for h in card.headers %}<th {% if loop.index0 == card.win_col %}class="win"{% endif %} {% if loop.first %}style="width:30%"{% endif %}>{{ h }}</th>{% endfor %}</tr>
+      {% for row in card.rows %}
+      <tr>{% for cell in row %}<td {% if loop.index0 == card.win_col %}class="win"{% endif %}>{{ cell }}</td>{% endfor %}</tr>
+      {% endfor %}
+    </table>
+
+    {% elif card.type == 'bignum' %}
+    <div class="big-num-card">
+      <div class="label">{{ card.label }}</div>
+      <div class="num">{{ card.num }}</div>
+      <div class="sub">{{ card.sub | safe }}</div>
+    </div>
+
+    {% elif card.type == 'checklist' %}
+    <div class="info-card" style="display:flex; flex-direction:column; gap:34px;">
+      {% for it in card['items'] %}<div class="check-item">{{ it | safe }}</div>{% endfor %}
+    </div>
+
+    {% elif card.type == 'steps' %}
+    {% for s in card.steps %}
+    <div class="step"><div class="n">{{ loop.index }}</div><div class="t">{{ s | safe }}</div></div>
+    {% endfor %}
+
+    {% elif card.type == 'summary' %}
+    <div class="info-card">
+      {% for it in card['items'] %}<div class="sum-item"><div class="n">{{ loop.index }}</div><div>{{ it }}</div></div>{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="disclaimer">{{ brand.disclaimer }}</div>
+  </div>
+  <div class="char-corner">
+    {% if card.bubble %}<div class="bubble">{{ card.bubble | safe }}</div>{% endif %}
+    {{ chars[card.pose or 'base'] | safe }}
+  </div>
+  <div class="footer-bar"><span>{{ brand.handle }}</span><span>{{ '%02d' % n }}</span></div>
+</div>
+{% endfor %}
+
+<!-- CTA -->
+<div class="canvas">
+  <div class="top-row"><span class="badge"><span class="dot"></span>{{ brand.name }}</span><span class="page-no">{{ '%02d' % total }} / {{ '%02d' % total }}</span></div>
+  <div class="cta-center">
+    <span class="kicker">무료 선물</span>
+    <h2 class="section-title" style="text-align:center; margin-top:36px;">'{{ c.cta.gift }}'<br><span class="hl">무료로</span> 드려요</h2>
+    <div class="gift-card">
+      <div class="g-title">받는 방법은 딱 1가지</div>
+      <div class="g-how">{{ c.cta.how }}<br>DM으로 바로 보내드릴게요</div>
+    </div>
+    <div class="char-wrap" style="margin-top:28px;">
+      <span class="spark" style="left:-60px; top:40px;">★</span>
+      <span class="spark s2" style="right:-54px; top:90px;">★</span>
+      {{ chars['happy'] | safe }}
+      <div class="ground" style="width:360px;"></div>
+    </div>
+  </div>
+  <div class="footer-bar"><span>팔로우하면 매일 하나씩</span><span>{{ brand.handle }} →</span></div>
+</div>
+</body>
+</html>

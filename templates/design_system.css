@@ -1,0 +1,169 @@
+/* ============================================
+   곰곰이 경제공부 — 디자인 시스템 v1
+   톤: 라이트 오렌지 / 카와이 스티커 스타일
+   ============================================ */
+:root {
+  /* 컬러 토큰 */
+  --c-primary: #E9701D;        /* 브랜드 오렌지 */
+  --c-primary-deep: #C9560F;   /* 진한 오렌지 (강조 텍스트) */
+  --c-accent: #FFC93C;         /* 옐로우 (형광펜/동전) */
+  --c-accent-soft: #FFE49A;    /* 연한 옐로우 */
+  --c-bg: #FFF6E8;             /* 크림 배경 */
+  --c-card: #FFFFFF;
+  --c-ink: #45301F;            /* 본문 텍스트 (진갈색) */
+  --c-outline: #5B3A22;        /* 외곽선 (캐릭터와 동일) */
+  --c-muted: #9A8368;
+
+  /* 타이포 */
+  --font-title: 'GmarketSansBold', 'Pretendard', 'Noto Sans CJK KR', sans-serif;
+  --font-body: 'Pretendard', 'Noto Sans CJK KR', sans-serif;
+
+  /* 형태 */
+  --radius-lg: 40px;
+  --radius-md: 24px;
+  --radius-pill: 999px;
+  --stroke: 5px;               /* 카와이 스티커 외곽선 두께 */
+  --sticker-shadow: 10px 12px 0 rgba(91, 58, 34, 0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ---------- 캔버스 ---------- */
+.canvas {
+  width: 1080px; height: 1350px;
+  background: var(--c-bg);
+  /* 도트 패턴 */
+  background-image: radial-gradient(rgba(233, 112, 29, 0.07) 7px, transparent 7px);
+  background-size: 64px 64px;
+  font-family: var(--font-body);
+  color: var(--c-ink);
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* ---------- 컴포넌트: 배지/칩 ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--c-card);
+  border: var(--stroke) solid var(--c-outline);
+  border-radius: var(--radius-pill);
+  padding: 14px 30px;
+  font-weight: 700; font-size: 30px; color: var(--c-outline);
+}
+.badge .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--c-primary); }
+
+/* ---------- 컴포넌트: 보조카피(키커) ---------- */
+.kicker {
+  display: inline-block;
+  background: var(--c-outline); color: #fff;
+  font-size: 38px; font-weight: 700;
+  padding: 16px 42px; border-radius: var(--radius-pill);
+}
+
+/* ---------- 컴포넌트: 초대형 타이틀 ---------- */
+.title-xl {
+  font-family: var(--font-title);
+  font-size: 128px; line-height: 1.22; font-weight: 900;
+  letter-spacing: -3px; color: var(--c-ink);
+  -webkit-text-stroke: 2.5px var(--c-ink); /* 무게 보강 */
+}
+.title-xl .hl {  /* 키워드 강조: 오렌지 + 형광펜 */
+  color: var(--c-primary-deep);
+  -webkit-text-stroke: 2.5px var(--c-primary-deep);
+  background: linear-gradient(transparent 58%, var(--c-accent) 58%, var(--c-accent) 92%, transparent 92%);
+}
+
+/* ---------- 컴포넌트: 후킹 문구 ---------- */
+.hook {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: var(--c-card);
+  border: var(--stroke) solid var(--c-outline);
+  border-radius: var(--radius-md);
+  box-shadow: var(--sticker-shadow);
+  font-size: 40px; font-weight: 700; color: var(--c-ink);
+  padding: 24px 44px;
+}
+.hook .em { color: var(--c-primary-deep); }
+
+/* ---------- 컴포넌트: 정보 카드 (본문용) ---------- */
+.info-card {
+  background: var(--c-card);
+  border: var(--stroke) solid var(--c-outline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--sticker-shadow);
+  padding: 48px;
+}
+.info-card h3 { font-size: 52px; color: var(--c-primary-deep); margin-bottom: 20px; }
+.info-card p { font-size: 38px; line-height: 1.55; }
+
+/* ---------- 컴포넌트: 체크리스트 ---------- */
+.check-item { display: flex; gap: 18px; align-items: flex-start; font-size: 38px; line-height: 1.5; }
+.check-item::before {
+  content: "✓"; flex: none;
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--c-accent); border: 4px solid var(--c-outline);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; color: var(--c-outline);
+}
+
+/* ---------- 컴포넌트: 푸터 ---------- */
+.footer-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: var(--c-primary);
+  color: #fff; font-size: 30px; font-weight: 700;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 22px 48px;
+}
+
+/* ---------- 유틸 ---------- */
+.ground { /* 캐릭터 발밑 타원 */
+  width: 560px; height: 64px; border-radius: 50%;
+  background: rgba(233, 112, 29, 0.15);
+}
+
+/* ============ 본문 카드 컴포넌트 (v1.1) ============ */
+.page-no { font-size: 30px; font-weight: 700; color: var(--c-muted); }
+.body-content { flex: 1; display: flex; flex-direction: column; padding: 30px 72px 0; }
+.section-kicker { font-size: 34px; font-weight: 700; color: var(--c-primary-deep); margin-bottom: 14px; }
+.section-title { font-family: var(--font-title); font-size: 72px; line-height: 1.25; letter-spacing: -1.5px; margin-bottom: 40px; }
+.section-title .hl { color: var(--c-primary-deep);
+  background: linear-gradient(transparent 58%, var(--c-accent) 58%, var(--c-accent) 92%, transparent 92%); }
+
+/* 비교 테이블 */
+.vs-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 34px;
+  border: var(--stroke) solid var(--c-outline); border-radius: var(--radius-md); overflow: hidden; background: var(--c-card); }
+.vs-table th { background: var(--c-outline); color: #fff; padding: 22px 18px; font-size: 32px; }
+.vs-table th.win { background: var(--c-primary); }
+.vs-table td { padding: 22px 18px; text-align: center; border-top: 3px solid #EFE3D2; line-height: 1.4; }
+.vs-table td:first-child { background: #FBF3E6; font-weight: 700; font-size: 30px; }
+.vs-table td.win { color: var(--c-primary-deep); font-weight: 800; }
+
+/* 빅넘버 */
+.big-num-card { background: var(--c-card); border: var(--stroke) solid var(--c-outline);
+  border-radius: var(--radius-lg); box-shadow: var(--sticker-shadow); text-align: center; padding: 52px 40px; }
+.big-num-card .label { font-size: 36px; font-weight: 700; color: var(--c-muted); margin-bottom: 12px; }
+.big-num-card .num { font-family: var(--font-title); font-size: 130px; font-weight: 900; color: var(--c-primary-deep); letter-spacing: -3px; }
+.big-num-card .sub { font-size: 34px; font-weight: 700; margin-top: 10px; }
+
+/* 스텝 */
+.step { display: flex; align-items: flex-start; gap: 24px; background: var(--c-card);
+  border: var(--stroke) solid var(--c-outline); border-radius: var(--radius-md); padding: 28px 34px; }
+.step + .step { margin-top: 26px; }
+.step .n { flex: none; width: 64px; height: 64px; border-radius: 50%; background: var(--c-primary); color: #fff;
+  font-family: var(--font-title); font-size: 38px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+.step .t { font-size: 36px; line-height: 1.45; }
+.step .t b { color: var(--c-primary-deep); }
+
+/* 요약 리스트 */
+.sum-item { display: flex; align-items: flex-start; gap: 22px; font-size: 40px; font-weight: 700; line-height: 1.45; }
+.sum-item + .sum-item { margin-top: 34px; }
+.sum-item .n { flex: none; width: 58px; height: 58px; border-radius: 16px; background: var(--c-accent);
+  border: 4px solid var(--c-outline); display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-title); font-size: 34px; color: var(--c-outline); }
+
+/* 캐릭터 코너 + 말풍선 */
+.char-corner { position: absolute; right: 48px; bottom: 96px; display: flex; align-items: flex-end; gap: 8px; }
+.char-corner svg { width: 230px; height: 230px; }
+.bubble { background: var(--c-card); border: 4px solid var(--c-outline); border-radius: 24px;
+  font-size: 28px; font-weight: 700; padding: 18px 24px; margin-bottom: 140px; max-width: 300px; line-height: 1.4; }
+.disclaimer { font-size: 22px; color: var(--c-muted); margin-top: auto; padding-bottom: 110px; }
