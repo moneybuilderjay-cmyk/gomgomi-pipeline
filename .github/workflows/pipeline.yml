@@ -23,6 +23,8 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+          QUANT_FEED_URL: ${{ secrets.QUANT_FEED_URL }}
+          QUANT_API_KEY: ${{ secrets.QUANT_API_KEY }}
           GITHUB_REPO: ${{ github.repository }}
           GITHUB_BRANCH: main
         run: python src/main_pipeline.py
