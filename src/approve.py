@@ -46,7 +46,20 @@ def process_updates():
         if not cq:
             continue
         data = cq.get("data", "")
-        if ":" in data:
+        if data.startswith("sel:"):
+            _, pid, n, lead = data.split(":")
+            q = state._load()
+            for p in q.get("proposals", []):
+                if p["id"] == pid and p["status"] == "awaiting_selection":
+                    if n == "0":
+                        p["status"] = "skipped"
+                    else:
+                        p["status"] = "selected"
+                        p["selected"] = int(n)
+                        p["lead"] = lead == "1"
+            state._save(q)
+            results[f"proposal:{pid}"] = f"sel {n} lead={lead}"
+        elif ":" in data:
             action, item_id = data.split(":", 1)
             status = "approved" if action == "approve" else "rejected"
             state.set_status(item_id, status)

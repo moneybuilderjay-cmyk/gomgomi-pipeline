@@ -33,7 +33,7 @@ def _mock():
     with open(p, encoding="utf-8") as f:
         return json.load(f)
 
-def generate_content(topic, headlines):
+def generate_content(topic, headlines, lead=True, category=None, market_ctx=""):
     if os.environ.get("GENERATE_MOCK") == "1":
         return _mock()
     import anthropic, yaml
@@ -41,9 +41,14 @@ def generate_content(topic, headlines):
     with open(cfg_path, encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
     client = anthropic.Anthropic()
-    user = (f"주제: {topic['title']}\n앵글: {topic.get('angle','')}\n"
+    lead_inst = ("cta.gift에는 이 무료자료를 사용: " + topic.get("lead_title", "")
+                 if lead else
+                 "이번 게시물은 무료자료 배포 없음. cta는 {\"gift\": null, \"how\": \"팔로우하고 매일 1장씩 받아보세요\"} 형태로.")
+    cat_inst = f"오늘의 카테고리: {category['name']} — {category['guide']}" if category else ""
+    user = (f"{cat_inst}\n주제: {topic['title']}\n앵글: {topic.get('angle','')}\n"
             f"오늘의 경제 헤드라인(참고, 관련 있을 때만 활용): {headlines}\n"
-            f"위 주제로 카드뉴스 JSON을 생성해라.")
+            f"시장 데이터(있으면 수치 활용, 없으면 수치 단정 금지): {market_ctx}\n"
+            f"{lead_inst}\n위 주제로 카드뉴스 JSON을 생성해라.")
     resp = client.messages.create(
         model=cfg["claude"]["model"], max_tokens=cfg["claude"]["max_tokens"],
         system=SYSTEM, messages=[{"role": "user", "content": user}],
