@@ -41,6 +41,20 @@ def reddit_top(limit=8):
     out.sort(key=lambda s: -int(s.split("▲")[1].split("]")[0]) if "▲" in s else 0)
     return out[:12]
 
+def fear_greed():
+    """CNN Fear & Greed — 시장 심리 한 줄 (매일 카드 소재로도 최고 가성비)"""
+    try:
+        r = requests.get("https://production.dataviz.cnn.io/index/fearandgreed/graphdata",
+                         headers=UA, timeout=15)
+        r.raise_for_status()
+        fg = r.json().get("fear_and_greed", {})
+        score, rating = fg.get("score"), fg.get("rating")
+        if score is not None:
+            return f"CNN Fear & Greed 지수: {round(float(score))} ({rating})"
+    except Exception as e:
+        print(f"[intel] fear&greed 실패: {e}")
+    return None
+
 def fmp_movers():
     """급등/급락/거래대금 상위 — 시장이 지금 주목하는 종목"""
     key = os.environ.get("FMP_API_KEY")
@@ -72,6 +86,9 @@ def collect_signals(pillar, kr_headlines):
     red = reddit_top()
     if red:
         parts.append("[미국 투자 커뮤니티 관심 상위(업보트순)]\n" + "\n".join(red))
+    fg = fear_greed()
+    if fg:
+        parts.append("[시장 심리]\n" + fg)
     mc = market.market_context(pillar)
     if mc and "없음" not in mc:
         parts.append("[시장 데이터]\n" + mc)
