@@ -9,9 +9,6 @@ def main():
     approved = state.get_items("approved")
     print(f"[publish] \uc2b9\uc778 {len(approved)}\uac74, hosting {len(state.get_items('hosting'))}\uac74")
     just_copied = set()
-    if not approved:
-        print("게시할 승인 건 없음")
-        return
     base = os.path.join(os.path.dirname(__file__), "..")
     for item in approved:
         # 이미지를 published/로 복사 (워크플로가 커밋 → raw URL 유효화)
