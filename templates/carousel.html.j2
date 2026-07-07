@@ -112,12 +112,21 @@
 <div class="canvas">
   <div class="top-row"><span class="badge"><span class="dot"></span>{{ brand.name }}</span><span class="page-no">{{ '%02d' % total }} / {{ '%02d' % total }}</span></div>
   <div class="cta-center">
+    {% if c.cta and c.cta.gift %}
     <span class="kicker">무료 선물</span>
     <h2 class="section-title" style="text-align:center; margin-top:36px;">'{{ c.cta.gift }}'<br><span class="hl">무료로</span> 드려요</h2>
     <div class="gift-card">
       <div class="g-title">받는 방법은 딱 1가지</div>
       <div class="g-how">{{ c.cta.how }}<br>DM으로 바로 보내드릴게요</div>
     </div>
+    {% else %}
+    <span class="kicker">매일 1장씩</span>
+    <h2 class="section-title" style="text-align:center; margin-top:36px;">도움이 됐다면<br><span class="hl">저장 + 팔로우</span> 해주세요</h2>
+    <div class="gift-card">
+      <div class="g-title">내일도 돈 되는 이야기로 올게요</div>
+      <div class="g-how">{{ c.cta.how if c.cta else "곰곰이랑 같이 경제공부해요" }}</div>
+    </div>
+    {% endif %}
     <div class="char-wrap" style="margin-top:28px;">
       <span class="spark" style="left:-60px; top:40px;">★</span>
       <span class="spark s2" style="right:-54px; top:90px;">★</span>
