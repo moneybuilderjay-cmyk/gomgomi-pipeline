@@ -4,7 +4,7 @@
 """
 import os, sys, shutil, time
 sys.path.insert(0, os.path.dirname(__file__))
-import collect, generate, render, state, approve, propose, publish, market
+import collect, generate, render, state, approve, propose, publish, market, intelligence, dm, quant
 
 BASE = os.path.join(os.path.dirname(__file__), "..")
 
@@ -27,7 +27,7 @@ def main():
             headlines = collect.rss_headlines()
         except Exception as e:
             print(f"RSS 실패(계속): {e}")
-        ctx = market.market_context(cat["pillar"])
+        ctx = intelligence.collect_signals(cat["pillar"], headlines)
         cands = propose.generate_candidates(cat, headlines, ctx)
         prop = propose.save_proposal(cat, cands)
         propose.send_candidates(prop)
@@ -45,7 +45,7 @@ def main():
                 headlines = collect.rss_headlines()
             except Exception:
                 pass
-            ctx = market.market_context(p.get("pillar", ""))
+            ctx = intelligence.collect_signals(p.get("pillar", ""), headlines)
             content = generate.generate_content(cand, headlines, lead=lead,
                                                 category=cat, market_ctx=ctx)
             caption = content["caption"] + "\n\n" + " ".join(content.get("hashtags", []))
@@ -69,6 +69,12 @@ def main():
             state._save(p2)
             print(f"[pipeline] 생성+승인요청: {cand['title']} (자료 {'O' if lead else 'X'})")
 
+    # 2.5) 화/목/토: HyperPass Quant 종목분석 → 곰곰이 재스킨 (QUANT_FEED_URL 설정 시)
+    try:
+        quant.maybe_run(cfg)
+    except Exception as e:
+        print(f"[pipeline] quant 실패(계속): {e}")
+
     # 3) 승인 건 → published/ 복사 (커밋은 워크플로가)
     just_copied = set()
     for item in state.get_items("approved"):
@@ -83,11 +89,20 @@ def main():
     for item in state.get_items("hosting"):
         if item["id"] in just_copied:
             continue
+        if not quant.publish_allowed(item):
+            print(f"[pipeline] {item['id']} 퀀트 건 — 19시(KST) 이후 게시 대기")
+            continue
         if os.path.exists(os.path.join(BASE, "published", item["id"])):
             media_id = publish.publish_carousel(item, item["n_cards"])
             state.set_status(item["id"], "published")
             approve.notify(f"✅ 게시 완료: {item['topic_title']} (media {media_id})")
             print(f"[pipeline] 게시 완료: {item['topic_title']}")
+
+    # 5) 댓글 키워드 → 무료자료 비공개 답장
+    try:
+        dm.check_and_reply()
+    except Exception as e:
+        print(f"[pipeline] DM 처리 실패(계속): {e}")
 
 if __name__ == "__main__":
     main()
