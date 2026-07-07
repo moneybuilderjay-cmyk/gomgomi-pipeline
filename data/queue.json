@@ -19,6 +19,18 @@
       "n_cards": 8,
       "status": "pending_approval",
       "created": "2026-07-07 08:57:56"
+    },
+    {
+      "id": "20260707-12b6bf",
+      "topic_id": "355e34",
+      "topic_title": "관세가 오르면 내 월급도 흔들린다? '관세'의 진짜 의미",
+      "caption": "미국이 한국에 관세 압박한다는 뉴스, 그냥 흘려보셨나요?\n\n사실 관세는 남의 나라 얘기가 아니라 내 월급이랑도 연결된 이야기예요. 관세가 오르면 수출기업 실적이 흔들리고, 그게 주가와 성과급, 채용에까지 영향을 줄 수 있거든요.\n\n오늘은 관세의 기본 개념부터 내 월급까지 이어지는 연쇄고리를 쉽게 정리해봤어요.\n\n저장해두고 다음에 관세 뉴스 나올 때 다시 꺼내보세요! 궁금한 점은 댓글로 남겨주세요 🐻\n\n#재테크 #경제공부 #관세 #사회초년생 #직장인재테크 #경제뉴스 #경제용어 #월급쟁이 #주식공부 #재테크초보 #경제기사 #수출기업 #미국관세 #금융공부 #돈공부 #직장인스타그램 #경알못탈출 #곰곰이의경제공부\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/355e34",
+      "n_cards": 8,
+      "status": "pending_approval",
+      "created": "2026-07-07 13:02:47",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -47,7 +59,9 @@
           "lead_desc": "물가상승률을 반영해 내 청약통장 진짜 수익률을 계산해보는 엑셀 템플릿"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 1,
+      "lead": false
     }
   ]
 }
