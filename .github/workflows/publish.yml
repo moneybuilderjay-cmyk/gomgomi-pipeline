@@ -1,8 +1,5 @@
 name: publish
 on:
-  schedule:
-    - cron: "0 9 * * *"    # 18:00 KST
-    - cron: "30 9 * * *"   # 18:30 KST (hosting 건 게시용 2차 실행)
   workflow_dispatch:
 permissions:
   contents: write

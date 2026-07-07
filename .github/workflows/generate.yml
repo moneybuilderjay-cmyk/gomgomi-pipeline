@@ -1,7 +1,5 @@
 name: generate
 on:
-  schedule:
-    - cron: "0 21 * * *"   # 06:00 KST
   workflow_dispatch:
 permissions:
   contents: write
