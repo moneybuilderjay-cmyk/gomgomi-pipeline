@@ -1,0 +1,5 @@
+# 댓글 키워드 → 무료자료 매핑 (dm.py가 사용)
+magnets:
+  - keyword: "곰곰"
+    file: assets/leadmagnets/isa_checklist.pdf
+    message: "안녕하세요, 곰곰이예요! 🐻 요청하신 'ISA 완전정복 체크리스트' 보내드려요. 도움이 됐다면 게시물 저장+팔로우 부탁드려요!"
