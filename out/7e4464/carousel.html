@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+/* ============================================
+   곰곰이 경제공부 — 디자인 시스템 v1
+   톤: 라이트 오렌지 / 카와이 스티커 스타일
+   ============================================ */
+:root {
+  /* 컬러 토큰 */
+  --c-primary: #E9701D;        /* 브랜드 오렌지 */
+  --c-primary-deep: #C9560F;   /* 진한 오렌지 (강조 텍스트) */
+  --c-accent: #FFC93C;         /* 옐로우 (형광펜/동전) */
+  --c-accent-soft: #FFE49A;    /* 연한 옐로우 */
+  --c-bg: #FFF6E8;             /* 크림 배경 */
+  --c-card: #FFFFFF;
+  --c-ink: #45301F;            /* 본문 텍스트 (진갈색) */
+  --c-outline: #5B3A22;        /* 외곽선 (캐릭터와 동일) */
+  --c-muted: #9A8368;
+
+  /* 타이포 */
+  --font-title: 'GmarketSansBold', 'Pretendard', 'Noto Sans CJK KR', sans-serif;
+  --font-body: 'Pretendard', 'Noto Sans CJK KR', sans-serif;
+
+  /* 형태 */
+  --radius-lg: 40px;
+  --radius-md: 24px;
+  --radius-pill: 999px;
+  --stroke: 5px;               /* 카와이 스티커 외곽선 두께 */
+  --sticker-shadow: 10px 12px 0 rgba(91, 58, 34, 0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ---------- 캔버스 ---------- */
+.canvas {
+  width: 1080px; height: 1350px;
+  background: var(--c-bg);
+  /* 도트 패턴 */
+  background-image: radial-gradient(rgba(233, 112, 29, 0.07) 7px, transparent 7px);
+  background-size: 64px 64px;
+  font-family: var(--font-body);
+  color: var(--c-ink);
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* ---------- 컴포넌트: 배지/칩 ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--c-card);
+  border: var(--stroke) solid var(--c-outline);
+  border-radius: var(--radius-pill);
+  padding: 14px 30px;
+  font-weight: 700; font-size: 30px; color: var(--c-outline);
+}
+.badge .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--c-primary); }
+
+/* ---------- 컴포넌트: 보조카피(키커) ---------- */
+.kicker {
+  display: inline-block;
+  background: var(--c-outline); color: #fff;
+  font-size: 38px; font-weight: 700;
+  padding: 16px 42px; border-radius: var(--radius-pill);
+}
+
+/* ---------- 컴포넌트: 초대형 타이틀 ---------- */
+.title-xl {
+  font-family: var(--font-title);
+  font-size: 128px; line-height: 1.22; font-weight: 900;
+  letter-spacing: -3px; color: var(--c-ink);
+  -webkit-text-stroke: 2.5px var(--c-ink); /* 무게 보강 */
+}
+.title-xl .hl {  /* 키워드 강조: 오렌지 + 형광펜 */
+  color: var(--c-primary-deep);
+  -webkit-text-stroke: 2.5px var(--c-primary-deep);
+  background: linear-gradient(transparent 58%, var(--c-accent) 58%, var(--c-accent) 92%, transparent 92%);
+}
+
+/* ---------- 컴포넌트: 후킹 문구 ---------- */
+.hook {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: var(--c-card);
+  border: var(--stroke) solid var(--c-outline);
+  border-radius: var(--radius-md);
+  box-shadow: var(--sticker-shadow);
+  font-size: 40px; font-weight: 700; color: var(--c-ink);
+  padding: 24px 44px;
+}
+.hook .em { color: var(--c-primary-deep); }
+
+/* ---------- 컴포넌트: 정보 카드 (본문용) ---------- */
+.info-card {
+  background: var(--c-card);
+  border: var(--stroke) solid var(--c-outline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--sticker-shadow);
+  padding: 48px;
+}
+.info-card h3 { font-size: 52px; color: var(--c-primary-deep); margin-bottom: 20px; }
+.info-card p { font-size: 38px; line-height: 1.55; }
+
+/* ---------- 컴포넌트: 체크리스트 ---------- */
+.check-item { display: flex; gap: 18px; align-items: flex-start; font-size: 38px; line-height: 1.5; }
+.check-item::before {
+  content: "✓"; flex: none;
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--c-accent); border: 4px solid var(--c-outline);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; color: var(--c-outline);
+}
+
+/* ---------- 컴포넌트: 푸터 ---------- */
+.footer-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: var(--c-primary);
+  color: #fff; font-size: 30px; font-weight: 700;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 22px 48px;
+}
+
+/* ---------- 유틸 ---------- */
+.ground { /* 캐릭터 발밑 타원 */
+  width: 560px; height: 64px; border-radius: 50%;
+  background: rgba(233, 112, 29, 0.15);
+}
+
+/* ============ 본문 카드 컴포넌트 (v1.1) ============ */
+.page-no { font-size: 30px; font-weight: 700; color: var(--c-muted); }
+.body-content { flex: 1; display: flex; flex-direction: column; padding: 30px 72px 0; }
+.section-kicker { font-size: 34px; font-weight: 700; color: var(--c-primary-deep); margin-bottom: 14px; }
+.section-title { font-family: var(--font-title); font-size: 72px; line-height: 1.25; letter-spacing: -1.5px; margin-bottom: 40px; }
+.section-title .hl { color: var(--c-primary-deep);
+  background: linear-gradient(transparent 58%, var(--c-accent) 58%, var(--c-accent) 92%, transparent 92%); }
+
+/* 비교 테이블 */
+.vs-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 34px;
+  border: var(--stroke) solid var(--c-outline); border-radius: var(--radius-md); overflow: hidden; background: var(--c-card); }
+.vs-table th { background: var(--c-outline); color: #fff; padding: 22px 18px; font-size: 32px; }
+.vs-table th.win { background: var(--c-primary); }
+.vs-table td { padding: 22px 18px; text-align: center; border-top: 3px solid #EFE3D2; line-height: 1.4; }
+.vs-table td:first-child { background: #FBF3E6; font-weight: 700; font-size: 30px; }
+.vs-table td.win { color: var(--c-primary-deep); font-weight: 800; }
+
+/* 빅넘버 */
+.big-num-card { background: var(--c-card); border: var(--stroke) solid var(--c-outline);
+  border-radius: var(--radius-lg); box-shadow: var(--sticker-shadow); text-align: center; padding: 52px 40px; }
+.big-num-card .label { font-size: 36px; font-weight: 700; color: var(--c-muted); margin-bottom: 12px; }
+.big-num-card .num { font-family: var(--font-title); font-size: 130px; font-weight: 900; color: var(--c-primary-deep); letter-spacing: -3px; }
+.big-num-card .sub { font-size: 34px; font-weight: 700; margin-top: 10px; }
+
+/* 스텝 */
+.step { display: flex; align-items: flex-start; gap: 24px; background: var(--c-card);
+  border: var(--stroke) solid var(--c-outline); border-radius: var(--radius-md); padding: 28px 34px; }
+.step + .step { margin-top: 26px; }
+.step .n { flex: none; width: 64px; height: 64px; border-radius: 50%; background: var(--c-primary); color: #fff;
+  font-family: var(--font-title); font-size: 38px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+.step .t { font-size: 36px; line-height: 1.45; }
+.step .t b { color: var(--c-primary-deep); }
+
+/* 요약 리스트 */
+.sum-item { display: flex; align-items: flex-start; gap: 22px; font-size: 40px; font-weight: 700; line-height: 1.45; }
+.sum-item + .sum-item { margin-top: 34px; }
+.sum-item .n { flex: none; width: 58px; height: 58px; border-radius: 16px; background: var(--c-accent);
+  border: 4px solid var(--c-outline); display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-title); font-size: 34px; color: var(--c-outline); }
+
+/* 캐릭터 코너 + 말풍선 */
+.char-corner { position: absolute; right: 48px; bottom: 96px; display: flex; align-items: flex-end; gap: 8px; }
+.char-corner svg { width: 230px; height: 230px; }
+.bubble { background: var(--c-card); border: 4px solid var(--c-outline); border-radius: 24px;
+  font-size: 28px; font-weight: 700; padding: 18px 24px; margin-bottom: 140px; max-width: 300px; line-height: 1.4; }
+.disclaimer { font-size: 22px; color: var(--c-muted); margin-top: auto; padding-bottom: 110px; }
+
+.canvas { page-break-after: always; }
+.top-row { display: flex; justify-content: space-between; align-items: center; padding: 48px 60px 0; }
+.badge, .kicker, .hook { white-space: nowrap; }
+.handle { font-size: 28px; font-weight: 700; color: var(--c-muted); }
+.center { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 26px; }
+.center .kicker { margin-bottom: 36px; }
+.center .title-xl { font-size: 112px; line-height: 1.18; margin-bottom: 44px; }
+.center .hook { font-size: 36px; }
+.char-wrap { position: relative; display: flex; flex-direction: column; align-items: center; margin-top: 12px; }
+.char-wrap svg.char, .char-wrap > svg { width: 350px; height: 350px; position: relative; z-index: 1; }
+.char-wrap .ground { width: 430px; height: 48px; margin-top: -38px; }
+.spark { position: absolute; font-size: 58px; color: var(--c-accent); z-index: 2; text-shadow: 2px 2px 0 rgba(91,58,34,0.25); }
+.spark.s2 { color: var(--c-primary); font-size: 40px; }
+.cta-center { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 40px 80px 0; }
+.gift-card { background: var(--c-card); border: var(--stroke) solid var(--c-outline); border-radius: var(--radius-lg); box-shadow: var(--sticker-shadow); padding: 44px 56px; margin-top: 40px; }
+.gift-card .g-title { font-family: var(--font-title); font-size: 56px; color: var(--c-primary-deep); margin-bottom: 18px; }
+.gift-card .g-how { font-size: 36px; font-weight: 700; line-height: 1.5; }
+.gift-card .g-how b { color: var(--c-primary-deep); }
+.char-corner svg { width: 230px; height: 230px; }
+</style>
+</head>
+<body>
+
+
+
+<!-- 표지 -->
+<div class="canvas">
+  <div class="top-row">
+    <span class="badge"><span class="dot"></span>곰곰이의 경제공부</span>
+    <span class="handle">@gomgomi.economy</span>
+  </div>
+  <div class="center">
+    <span class="kicker">레버리지 ETF 열풍</span>
+    <h1 class="title-xl">하루 만에<br><span class="hl">1422억</span><br>강제 청산됐다</h1>
+    <div class="hook">3배 수익 노렸다가 벌어진 일</div>
+    <div class="char-wrap">
+      <span class="spark" style="left:-64px; top:56px;">★</span>
+      <span class="spark s2" style="right:-58px; top:110px;">★</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
+    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
+  </defs>
+  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    
+    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
+    
+    <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
+    <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
+    
+    <circle fill="#FFC93C" cx="250" cy="380" r="66"></circle>
+    <circle fill="none" stroke="#E9701D" stroke-width="5" cx="250" cy="380" r="47"></circle>
+    <text x="250" y="397" text-anchor="middle" font-family="Arial, sans-serif" font-size="47" font-weight="bold" fill="#8A5738" stroke="none">₩</text>
+    
+    <ellipse fill="#C9854A" cx="187" cy="342" rx="52" ry="26" transform="rotate(38 187 342)"></ellipse>
+    <ellipse fill="#C9854A" cx="313" cy="342" rx="52" ry="26" transform="rotate(-38 313 342)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="214" cy="318" rx="20" ry="17"></ellipse>
+    <ellipse fill="#F7E4C3" cx="286" cy="318" rx="20" ry="17"></ellipse>
+    
+    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
+    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
+    
+    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
+    
+    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
+    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
+    
+    <ellipse fill="#3A2416" stroke="none" cx="183" cy="216" rx="24" ry="28"></ellipse>
+    <ellipse fill="#3A2416" stroke="none" cx="317" cy="216" rx="24" ry="28"></ellipse>
+    <circle fill="#FFFFFF" stroke="none" cx="190" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="176" cy="224" r="3.5"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="324" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="310" cy="224" r="3.5"></circle>
+    
+    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
+    
+    <path fill="none" stroke-width="5" d="M 231 262 C 235 272 246 272 250 263 C 254 272 265 272 269 262"></path>
+  </g>
+</svg>
+      <div class="ground"></div>
+    </div>
+  </div>
+  <div class="footer-bar"><span>새 콘텐츠</span><span>저장해두고 따라하기 →</span></div>
+</div>
+
+
+
+<div class="canvas">
+  <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">02 / 08</span></div>
+  <div class="body-content">
+    <div class="section-kicker">레버리지 ETF, 요즘 핫하다던데</div>
+    <h2 class="section-title">너도 이 <span class="hl">착각</span>, 하고 있나요?</h2>
+
+    
+    <div class="info-card">
+      <h3>"3배면 나도 3배 벌 수 있잖아?"</h3>
+      <p >요즘 SNS에서 레버리지 ETF 얘기 많이 보이시죠.</p><p style="margin-top:24px;">"지수 3% 오르면 나는 9% 번다"는 말에 혹하기 쉬워요.</p><p style="margin-top:24px;">그런데 이 계산, 절반만 맞는 얘기예요.</p>
+    </div>
+
+    
+
+    <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
+  </div>
+  <div class="char-corner">
+    <div class="bubble">곰곰이도 처음엔 그런 줄 알았어...</div>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
+    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
+  </defs>
+  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    
+    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
+    
+    <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
+    <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
+    
+    <ellipse fill="#C9854A" cx="185" cy="385" rx="40" ry="23" transform="rotate(10 185 385)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="218" cy="390" rx="20" ry="17"></ellipse>
+    
+    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
+    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
+    
+    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
+    
+    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
+    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
+    
+    <ellipse fill="#3A2416" stroke="none" cx="183" cy="216" rx="24" ry="28"></ellipse>
+    <ellipse fill="#3A2416" stroke="none" cx="317" cy="216" rx="24" ry="28"></ellipse>
+    <circle fill="#FFFFFF" stroke="none" cx="190" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="176" cy="224" r="3.5"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="324" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="310" cy="224" r="3.5"></circle>
+    
+    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
+    
+    <path fill="none" stroke-width="5" d="M 231 262 C 235 272 246 272 250 263 C 254 272 265 272 269 262"></path>
+    
+    <ellipse fill="#C9854A" cx="360" cy="310" rx="24" ry="50" transform="rotate(38 360 310)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="394" cy="262" rx="20" ry="17"></ellipse>
+    
+    <path fill="none" stroke-width="4" d="M 432 238 A 22 22 0 0 1 444 268"></path>
+    <path fill="none" stroke-width="4" d="M 442 218 A 34 34 0 0 1 460 264"></path>
+  </g>
+</svg>
+  </div>
+  <div class="footer-bar"><span>@gomgomi.economy</span><span>02</span></div>
+</div>
+
+
+<div class="canvas">
+  <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">03 / 08</span></div>
+  <div class="body-content">
+    <div class="section-kicker">'3배'의 함정</div>
+    <h2 class="section-title">'<span class="hl">3배</span>'의 진짜 의미</h2>
+
+    
+    <div class="info-card">
+      <h3>3배는 '하루' 수익률에만 적용돼요</h3>
+      <p >레버리지 ETF는 '기초지수의 하루 등락률'을 3배로 따라가요.</p><p style="margin-top:24px;">오늘 지수가 +1%면 나는 +3%, -1%면 -3%.</p><p style="margin-top:24px;">문제는 오르고 내리기를 반복할 때예요.</p>
+    </div>
+
+    
+
+    <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
+  </div>
+  <div class="char-corner">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
+    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
+  </defs>
+  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    
+    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
+    
+    <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
+    <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
+    
+    <ellipse fill="#C9854A" cx="175" cy="392" rx="24" ry="46" transform="rotate(12 175 392)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="172" cy="430" rx="20" ry="17"></ellipse>
+    
+    <ellipse fill="#C9854A" cx="355" cy="352" rx="58" ry="23" transform="rotate(-6 355 352)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="406" cy="344" rx="20" ry="17"></ellipse>
+    
+    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
+    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
+    
+    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
+    
+    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
+    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
+    
+    <ellipse fill="#3A2416" stroke="none" cx="183" cy="216" rx="24" ry="28"></ellipse>
+    <ellipse fill="#3A2416" stroke="none" cx="317" cy="216" rx="24" ry="28"></ellipse>
+    <circle fill="#FFFFFF" stroke="none" cx="190" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="176" cy="224" r="3.5"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="324" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="310" cy="224" r="3.5"></circle>
+    
+    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
+    
+    <path fill="none" stroke-width="5" d="M 231 262 C 235 272 246 272 250 263 C 254 272 265 272 269 262"></path>
+  </g>
+</svg>
+  </div>
+  <div class="footer-bar"><span>@gomgomi.economy</span><span>03</span></div>
+</div>
+
+
+<div class="canvas">
+  <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">04 / 08</span></div>
+  <div class="body-content">
+    <div class="section-kicker">숫자로 보는 함정</div>
+    <h2 class="section-title">지수는 -1%인데 나는 <span class="hl">-9%</span></h2>
+
+    
+    <table class="vs-table">
+      <tr><th  style="width:30%"></th><th class="win" >일반 지수</th><th  >3배 레버리지</th></tr>
+      
+      <tr><td >1일차 (-10%)</td><td class="win">90</td><td >70 (-30%)</td></tr>
+      
+      <tr><td >2일차 (+10%)</td><td class="win">99</td><td >91 (+30%)</td></tr>
+      
+      <tr><td >최종 결과</td><td class="win">-1%</td><td >-9%</td></tr>
+      
+    </table>
+
+    
+
+    <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
+  </div>
+  <div class="char-corner">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
+    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
+  </defs>
+  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    
+    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
+    
+    <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
+    <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
+    
+    <ellipse fill="#C9854A" cx="175" cy="392" rx="24" ry="46" transform="rotate(12 175 392)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="172" cy="430" rx="20" ry="17"></ellipse>
+    
+    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
+    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
+    
+    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
+    
+    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
+    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
+    
+    <ellipse fill="#3A2416" stroke="none" cx="183" cy="216" rx="24" ry="28"></ellipse>
+    <ellipse fill="#3A2416" stroke="none" cx="317" cy="216" rx="24" ry="28"></ellipse>
+    <circle fill="#FFFFFF" stroke="none" cx="190" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="176" cy="224" r="3.5"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="324" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="310" cy="224" r="3.5"></circle>
+    
+    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
+    
+    <path fill="none" stroke-width="5" d="M 236 266 Q 243 260 250 266 Q 257 272 264 266"></path>
+    
+    <ellipse fill="#C9854A" cx="338" cy="316" rx="24" ry="48" transform="rotate(-14 338 316)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="346" cy="268" rx="20" ry="17"></ellipse>
+    
+    <text x="352" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="84" font-weight="bold" fill="#E9701D" stroke="#5B3A22" stroke-width="3" transform="rotate(12 352 50)">?</text>
+  </g>
+</svg>
+  </div>
+  <div class="footer-bar"><span>@gomgomi.economy</span><span>04</span></div>
+</div>
+
+
+<div class="canvas">
+  <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">05 / 08</span></div>
+  <div class="body-content">
+    <div class="section-kicker">실제 벌어진 일</div>
+    <h2 class="section-title">하루 새 <span class="hl">1,422억</span> 강제 청산</h2>
+
+    
+    <div class="big-num-card">
+      <div class="label">강제 청산 규모</div>
+      <div class="num">1,422억원</div>
+      <div class="sub">최근 '검은 화·수요일' 증시 급락 때, 레버리지·선물 투자자들이 하루 새 강제로 청산된 금액이에요.</div>
+    </div>
+
+    
+
+    <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
+  </div>
+  <div class="char-corner">
+    <div class="bubble">변동성 앞에서 레버리지는 더 위험해져요</div>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
+    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
+  </defs>
+  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    
+    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
+    
+    <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
+    <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
+    
+    <ellipse fill="#C9854A" cx="172" cy="345" rx="52" ry="26" transform="rotate(30 172 345)"></ellipse>
+    <ellipse fill="#C9854A" cx="328" cy="345" rx="52" ry="26" transform="rotate(-30 328 345)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="128" cy="320" rx="20" ry="17"></ellipse>
+    <ellipse fill="#F7E4C3" cx="372" cy="320" rx="20" ry="17"></ellipse>
+    
+    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
+    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
+    
+    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
+    
+    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
+    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
+    
+    <circle fill="#3A2416" stroke="none" cx="183" cy="216" r="29"></circle>
+    <circle fill="#3A2416" stroke="none" cx="317" cy="216" r="29"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="190" cy="206" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="324" cy="206" r="8"></circle>
+    
+    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
+    
+    <ellipse fill="#5B3A22" stroke="none" cx="250" cy="280" rx="15" ry="18"></ellipse>
+    
+    <g transform="rotate(8 250 36)">
+      <rect fill="#E9701D" x="240" y="4" width="20" height="38" rx="10"></rect>
+      <circle fill="#E9701D" cx="250" cy="62" r="9"></circle>
+    </g>
+  </g>
+</svg>
+  </div>
+  <div class="footer-bar"><span>@gomgomi.economy</span><span>05</span></div>
+</div>
+
+
+<div class="canvas">
+  <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">06 / 08</span></div>
+  <div class="body-content">
+    <div class="section-kicker">투자 전 필수 체크</div>
+    <h2 class="section-title">레버리지 ETF <span class="hl">체크리스트</span></h2>
+
+    
+    <div class="info-card" style="display:flex; flex-direction:column; gap:34px;">
+      <div class="check-item">단기 매매용이지, 장기 보유는 위험해요</div><div class="check-item">변동성 클수록 손실이 기하급수적으로 커져요</div><div class="check-item">3배 수익 기대되면 3배 손실도 각오해야 해요</div><div class="check-item">전체 투자금의 일부만, 여윳돈으로만</div>
+    </div>
+
+    
+
+    <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
+  </div>
+  <div class="char-corner">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
+    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
+  </defs>
+  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    
+    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
+    
+    <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
+    <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
+    
+    <ellipse fill="#C9854A" cx="200" cy="364" rx="54" ry="27" transform="rotate(16 200 364)"></ellipse>
+    <ellipse fill="#C9854A" cx="300" cy="364" rx="54" ry="27" transform="rotate(-16 300 364)"></ellipse>
+    
+    <circle fill="#FFC93C" cx="250" cy="374" r="38"></circle>
+    <circle fill="none" stroke="#E9701D" stroke-width="5" cx="250" cy="374" r="27"></circle>
+    <text x="250" y="384" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" font-weight="bold" fill="#8A5738" stroke="none">₩</text>
+    <ellipse fill="#F7E4C3" cx="216" cy="384" rx="20" ry="17"></ellipse>
+    <ellipse fill="#F7E4C3" cx="284" cy="384" rx="20" ry="17"></ellipse>
+    
+    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
+    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
+    
+    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
+    
+    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
+    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
+    
+    <ellipse fill="#3A2416" stroke="none" cx="183" cy="216" rx="24" ry="28"></ellipse>
+    <ellipse fill="#3A2416" stroke="none" cx="317" cy="216" rx="24" ry="28"></ellipse>
+    <circle fill="#FFFFFF" stroke="none" cx="190" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="176" cy="224" r="3.5"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="324" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="310" cy="224" r="3.5"></circle>
+    
+    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
+    
+    <path fill="none" stroke-width="5" d="M 231 262 C 235 272 246 272 250 263 C 254 272 265 272 269 262"></path>
+  </g>
+</svg>
+  </div>
+  <div class="footer-bar"><span>@gomgomi.economy</span><span>06</span></div>
+</div>
+
+
+<div class="canvas">
+  <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">07 / 08</span></div>
+  <div class="body-content">
+    <div class="section-kicker">오늘의 핵심</div>
+    <h2 class="section-title">이것만 <span class="hl">기억하세요</span></h2>
+
+    
+    <div class="info-card">
+      <div class="sum-item"><div class="n">1</div><div>레버리지는 '하루 수익률'의 3배지, 누적 수익의 3배가 아니에요</div></div><div class="sum-item"><div class="n">2</div><div>오르내림이 반복되면 원금이 계속 깎여요 (변동성 손실)</div></div><div class="sum-item"><div class="n">3</div><div>최근 하루 새 1,422억 강제 청산 사례도 있었어요</div></div><div class="sum-item"><div class="n">4</div><div>장기 보유보다는 단기·소액으로 접근하세요</div></div>
+    </div>
+    
+
+    <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
+  </div>
+  <div class="char-corner">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
+    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
+  </defs>
+  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    
+    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
+    
+    <ellipse fill="#C9854A" cx="178" cy="368" rx="42" ry="24" transform="rotate(8 178 368)"></ellipse>
+    <ellipse fill="#C9854A" cx="322" cy="368" rx="42" ry="24" transform="rotate(-8 322 368)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="206" cy="374" rx="20" ry="17"></ellipse>
+    <ellipse fill="#F7E4C3" cx="294" cy="374" rx="20" ry="17"></ellipse>
+    
+    <path fill="#E9701D" d="M 192 390 C 148 400 148 458 190 477 C 228 493 272 493 310 477 C 352 458 352 400 308 390 Z"></path>
+    <ellipse fill="#8A5738" cx="250" cy="388" rx="56" ry="13"></ellipse>
+    
+    <circle fill="#FFC93C" cx="250" cy="370" r="28"></circle>
+    <circle fill="none" stroke="#E9701D" stroke-width="5" cx="250" cy="370" r="20"></circle>
+    <text x="250" y="377" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#8A5738" stroke="none">₩</text>
+    <path fill="#E9701D" stroke-width="5" d="M 194 388 A 56 13 0 0 0 306 388 Z"></path>
+    <text x="250" y="452" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#FFC93C" stroke="none">₩</text>
+    
+    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
+    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
+    
+    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
+    
+    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
+    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
+    
+    <ellipse fill="#3A2416" stroke="none" cx="183" cy="216" rx="24" ry="28"></ellipse>
+    <ellipse fill="#3A2416" stroke="none" cx="317" cy="216" rx="24" ry="28"></ellipse>
+    <circle fill="#FFFFFF" stroke="none" cx="190" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="176" cy="224" r="3.5"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="324" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="310" cy="224" r="3.5"></circle>
+    
+    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
+    
+    <path fill="none" stroke-width="5" d="M 231 262 C 235 272 246 272 250 263 C 254 272 265 272 269 262"></path>
+  </g>
+</svg>
+  </div>
+  <div class="footer-bar"><span>@gomgomi.economy</span><span>07</span></div>
+</div>
+
+
+<!-- CTA -->
+<div class="canvas">
+  <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">08 / 08</span></div>
+  <div class="cta-center">
+    
+    <span class="kicker">매일 1장씩</span>
+    <h2 class="section-title" style="text-align:center; margin-top:36px;">도움이 됐다면<br><span class="hl">저장 + 팔로우</span> 해주세요</h2>
+    <div class="gift-card">
+      <div class="g-title">내일도 돈 되는 이야기로 올게요</div>
+      <div class="g-how">팔로우하고 매일 1장씩 받아보세요</div>
+    </div>
+    
+    <div class="char-wrap" style="margin-top:28px;">
+      <span class="spark" style="left:-60px; top:40px;">★</span>
+      <span class="spark s2" style="right:-54px; top:90px;">★</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
+    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
+  </defs>
+  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    <path fill="#FFC93C" stroke-width="4" d="M 70 120 Q 74 136 90 140 Q 74 144 70 160 Q 66 144 50 140 Q 66 136 70 120 Z"></path>
+    <path fill="#FFC93C" stroke-width="4" d="M 442 96 Q 446.8 115.2 466 120 Q 446.8 124.8 442 144 Q 437.2 124.8 418 120 Q 437.2 115.2 442 96 Z"></path>
+    <path fill="#FFC93C" stroke-width="4" d="M 96 43 Q 98.6 53.4 109 56 Q 98.6 58.6 96 69 Q 93.4 58.6 83 56 Q 93.4 53.4 96 43 Z"></path>
+    <path fill="#FFC93C" stroke-width="4" d="M 452 296 Q 454.8 307.2 466 310 Q 454.8 312.8 452 324 Q 449.2 312.8 438 310 Q 449.2 307.2 452 296 Z"></path>
+    <circle fill="#FFC93C" stroke-width="4" cx="52" cy="220" r="7"></circle>
+    <circle fill="#FFC93C" stroke-width="4" cx="470" cy="200" r="6"></circle>
+    
+    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
+    
+    <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
+    <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
+    
+    <ellipse fill="#C9854A" cx="163" cy="330" rx="54" ry="26" transform="rotate(50 163 330)"></ellipse>
+    <ellipse fill="#C9854A" cx="337" cy="330" rx="54" ry="26" transform="rotate(-50 337 330)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="128" cy="288" rx="20" ry="17"></ellipse>
+    <ellipse fill="#F7E4C3" cx="372" cy="288" rx="20" ry="17"></ellipse>
+    
+    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
+    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
+    
+    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
+    
+    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
+    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
+    
+    <path fill="none" stroke-width="8" d="M 160 208 C 166 222 200 222 206 208"></path>
+    <path fill="none" stroke-width="8" d="M 294 208 C 300 222 334 222 340 208"></path>
+    
+    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
+    
+    <path fill="none" stroke-width="5" d="M 231 262 C 235 272 246 272 250 263 C 254 272 265 272 269 262"></path>
+  </g>
+</svg>
+      <div class="ground" style="width:360px;"></div>
+    </div>
+  </div>
+  <div class="footer-bar"><span>팔로우하면 매일 하나씩</span><span>@gomgomi.economy →</span></div>
+</div>
+</body>
+</html>
