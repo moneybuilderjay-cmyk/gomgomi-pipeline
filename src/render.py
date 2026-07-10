@@ -17,8 +17,14 @@ def _load_chars():
                 chars[pose] = fh.read()
     return chars
 
+def _num_size(s, base, budget=900):
+    """초대형 숫자 자동 크기: ASCII 0.62em, 한글/와이드 1.0em 폭 가정"""
+    w = sum(0.62 if ord(ch) < 128 else 1.0 for ch in s)
+    return int(min(base, budget / max(w, 1)))
+
 def render_html(content, brand):
     env = Environment(loader=FileSystemLoader(TPL_DIR))
+    env.globals["num_size"] = _num_size
     with open(os.path.join(TPL_DIR, "design_system.css"), encoding="utf-8") as f:
         css = f.read()
     tpl = env.get_template("carousel.html.j2")
