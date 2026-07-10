@@ -132,16 +132,21 @@ def _load_feed():
     return None
 
 def maybe_run(cfg):
-    """화/목/토 KST, 데이터가 있고 오늘 건이 없으면 생성→승인요청"""
-    wd = (int(_kst("%w")) + 6) % 7  # 0=월
-    if wd not in QUANT_WEEKDAYS:
-        return
+    """오늘 날짜의 데이터가 있고 오늘 건이 없으면 생성→승인요청.
+    - 리포 파일(대시보드 '곰곰이 전송' 버튼): 날짜가 오늘이면 요일 무관 실행 (전송 = 의도)
+    - URL 피드(완전 자동): 화/목/토에만 실행"""
     today = _kst("%Y%m%d")
     topic_id = f"quant-{today}"
     if any(it["topic_id"] == topic_id for it in state._load()["items"]):
         return
     d = _load_feed()
     if not d:
+        return
+    # URL 피드로만 받은 경우엔 요일 게이트 적용
+    p = os.path.join(BASE, "data", "quant_today.json")
+    from_file = os.path.exists(p)
+    wd = (int(_kst("%w")) + 6) % 7  # 0=월
+    if not from_file and wd not in QUANT_WEEKDAYS:
         return
     content = build_content(d)
     caption = content["caption"] + "\n\n" + " ".join(content["hashtags"])
