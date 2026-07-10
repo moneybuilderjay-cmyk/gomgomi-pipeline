@@ -1,0 +1,64 @@
+{
+  "date": "2026-07-10",
+  "week": 138,
+  "ticker": "NBIS",
+  "name_kr": "네비우스",
+  "sector": "IT",
+  "tagline": "AI 학습용 GPU를 빌려주는 네오클라우드",
+  "biz_points": [
+    "엔비디아 GPU 클러스터를 구축해 AI 기업에 임대",
+    "구 얀덱스 해외사업 분리 법인 — AI 인프라 전문",
+    "빅테크보다 싸고 빠른 GPU 공급 — 증설 속도가 곧 성장"
+  ],
+  "metrics": {
+    "eps_growth": -10.1,
+    "rev_growth": 68,
+    "eps_revision": "C+",
+    "roa": 3.7
+  },
+  "sector_comp": {
+    "roa": [
+      3.7,
+      3.3
+    ],
+    "op_margin": [
+      -68.8,
+      7.4
+    ],
+    "verdict": "섹터 평균 수준 — 품질 보정 중립",
+    "peers": [
+      "ORCL",
+      "MU",
+      "PLTR",
+      "NVDA",
+      "VST"
+    ]
+  },
+  "valuation": {
+    "price": 216.2,
+    "fair": 598.2,
+    "fair_pe": 309.6,
+    "fair_ps": 886.9,
+    "pct_of_fair": 36,
+    "upside": 176.7,
+    "off_high": -27.9,
+    "eps_delta_wk": -38.1,
+    "label": "저평가 구간"
+  },
+  "summary3": [
+    "AI 학습용 GPU를 빌려주는 네오클라우드",
+    "현재가 $216.2, 모델 적정주가 $598.2의 36% 수준",
+    "52주 고점 대비 -27.9% — 변동성은 항상 존재"
+  ],
+  "watch_next": [
+    "EPS 리비전 등급(C+) 유지 여부",
+    "성장률 추정치의 방향 (상향/하향)",
+    "적정주가 재계산 결과와 현재가의 거리 변화"
+  ],
+  "performance": {
+    "weeks": 137,
+    "cum_return": 248,
+    "benchmark": "나스닥",
+    "bench_return": 101.2
+  }
+}
