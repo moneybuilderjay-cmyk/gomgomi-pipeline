@@ -69,6 +69,30 @@ def main():
             state._save(p2)
             print(f"[pipeline] 생성+승인요청: {cand['title']} (자료 {'O' if lead else 'X'})")
 
+    # 2.4) 승인 대기 리마인더 — 텔레그램 콜백은 24시간 후 만료되므로 버튼을 주기적으로 재전송
+    import glob as _glob
+    now = time.time()
+    q = state._load()
+    changed = False
+    for it in q.get("items", []):
+        if it["status"] != "pending_approval":
+            continue
+        last = it.get("resent_ts") or time.mktime(time.strptime(it["created"], "%Y-%m-%d %H:%M:%S"))
+        if now - last > 20 * 3600:
+            try:
+                paths = sorted(_glob.glob(os.path.join(BASE, "out", it["topic_id"], "card-*.jpg")))
+                if paths:
+                    approve.send_for_approval(it, paths)
+                else:
+                    approve.notify(f"⏰ 승인 대기 중: {it['topic_title']}\nID: {it['id']} — 다음 실행에서 다시 안내드려요")
+                it["resent_ts"] = now
+                changed = True
+                print(f"[pipeline] 승인 요청 재전송: {it['id']}")
+            except Exception as e:
+                print(f"[pipeline] 재전송 실패 {it['id']}: {e}")
+    if changed:
+        state._save(q)
+
     # 2.5) 화/목/토: HyperPass Quant 종목분석 → 곰곰이 재스킨 (QUANT_FEED_URL 설정 시)
     try:
         quant.maybe_run(cfg)
