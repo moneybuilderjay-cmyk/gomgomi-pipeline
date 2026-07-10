@@ -8,15 +8,15 @@
 .top-row { display: flex; justify-content: space-between; align-items: center; padding: 48px 60px 0; }
 .badge, .kicker, .hook { white-space: nowrap; }
 .handle { font-size: 28px; font-weight: 700; color: var(--c-muted); }
-.center { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 26px; }
-.center .kicker { margin-bottom: 36px; }
-.center .title-xl { font-size: 112px; line-height: 1.18; margin-bottom: 44px; }
+.center { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 20px; }
+.center .kicker { margin-bottom: 34px; }
+.center .title-xl { font-size: 110px; line-height: 1.2; margin-bottom: 38px; }
 .center .hook { font-size: 36px; }
 .char-wrap { position: relative; display: flex; flex-direction: column; align-items: center; margin-top: 12px; }
-.char-wrap svg.char, .char-wrap > svg { width: 350px; height: 350px; position: relative; z-index: 1; }
-.char-wrap .ground { width: 430px; height: 48px; margin-top: -38px; }
-.spark { position: absolute; font-size: 58px; color: var(--c-accent); z-index: 2; text-shadow: 2px 2px 0 rgba(91,58,34,0.25); }
-.spark.s2 { color: var(--c-primary); font-size: 40px; }
+.char-wrap svg.char, .char-wrap > svg { width: 400px; height: 400px; position: relative; z-index: 1; }
+.char-wrap .ground { width: 480px; height: 44px; margin-top: -34px; }
+.spark { position: absolute; font-size: 56px; color: var(--c-accent); z-index: 2; text-shadow: 2px 2px 0 rgba(91,58,34,0.25); }
+.spark.s2 { color: var(--c-primary); font-size: 38px; }
 .cta-center { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 40px 80px 0; }
 .gift-card { background: var(--c-card); border: var(--stroke) solid var(--c-outline); border-radius: var(--radius-lg); box-shadow: var(--sticker-shadow); padding: 44px 56px; margin-top: 40px; }
 .gift-card .g-title { font-family: var(--font-title); font-size: 56px; color: var(--c-primary-deep); margin-bottom: 18px; }
@@ -31,9 +31,78 @@
     {{ title.replace(hl, '<span class="hl">' + hl + '</span>') | safe }}
   {%- else -%}{{ title }}{%- endif -%}
 {%- endmacro %}
+{% macro num_split(num) -%}
+  {%- if num.endswith('%') -%}{{ num[:-1] }}<span class="pct">%</span>{%- else -%}{{ num }}{%- endif -%}
+{%- endmacro %}
+{% macro corner(card) -%}
+  <div class="char-corner">
+    {% if card.bubble %}<div class="bubble{% if card.bubble | length <= 14 and '<br' not in card.bubble %} nw{% endif %}" style="margin-bottom:150px;">{{ card.bubble | safe }}</div>{% endif %}
+    {{ chars[card.pose or 'base'] | safe }}
+  </div>
+{%- endmacro %}
 {% set total = c.cards | length + 2 %}
+{% set cover = c.cover_layout or 'character' %}
 
-<!-- 표지 -->
+<!-- ═══════════ 표지 (cover_layout: character / bignum / chat / ai) ═══════════ -->
+{% if cover == 'bignum' %}
+<div class="canvas invert">
+  <div class="top-row">
+    <span class="badge"><span class="dot"></span>{{ brand.name }}</span>
+    <span class="handle">{{ brand.handle }}</span>
+  </div>
+  <div class="mega-wrap">
+    <span class="mega-label">{{ c.cover_label }}</span>
+    <div class="mega-num" style="font-size:{{ num_size(c.cover_num, 400, 940) }}px;">{{ num_split(c.cover_num) }}</div>
+    <div class="mega-sub">{{ c.cover_sub | safe }}</div>
+  </div>
+  <div class="peek">
+    {% if c.cover_bubble %}<div class="bub">{{ c.cover_bubble | safe }}</div>{% endif %}
+    {{ chars[c.cover_pose or 'surprise'] | safe }}
+  </div>
+  <div class="footer-bar"><span>새 콘텐츠</span><span>{{ c.cover_teaser or '이유는 옆으로 →' }}</span></div>
+</div>
+
+{% elif cover == 'chat' %}
+<div class="canvas">
+  <div class="top-row">
+    <span class="badge"><span class="dot"></span>{{ brand.name }}</span>
+    <span class="handle">{{ brand.handle }}</span>
+  </div>
+  <div class="center" style="align-items:stretch; text-align:left;">
+    <div class="chat">
+      {% for m in c.cover_chat %}
+      <div class="msg{{ ' me' if m.who == 'me' else '' }}">
+        <div class="avatar">{% if m.who == 'me' %}₩{% else %}{{ chars[m.pose or 'think'] | safe }}{% endif %}</div>
+        <div class="say">{{ m.text | safe }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center; margin-top:{{ 56 if c.title_lines | length <= 2 else 26 }}px;">
+      <h1 class="title-xl" style="font-size:{{ 96 if c.title_lines | length <= 2 else 72 }}px; line-height:1.2; margin-bottom:{{ 30 if c.title_lines | length <= 2 else 22 }}px;">{% for line in c.title_lines %}{{ hl_title(line, c.hl) }}{% if not loop.last %}<br>{% endif %}{% endfor %}</h1>
+      <span class="swipe-pill">{{ c.cover_teaser or '진실은 옆장에 →' }}</span>
+    </div>
+  </div>
+  <div class="footer-bar"><span>새 콘텐츠</span><span>{{ brand.handle }}</span></div>
+</div>
+
+{% elif cover == 'ai' and c.ai_image %}
+<div class="canvas" style="background:#FFF6E8;">
+  <img src="{{ c.ai_image }}" style="position:absolute; top:0; left:0; width:1080px; height:1350px; object-fit:cover;">
+  <div class="top-row" style="position:relative; z-index:2;">
+    <span class="badge"><span class="dot"></span>{{ brand.name }}</span>
+    <span class="handle">{{ brand.handle }}</span>
+  </div>
+  <div style="position:relative; z-index:2; text-align:center; padding-top:30px;">
+    <span class="kicker">{{ c.kicker }}</span><br>
+    <h1 class="title-xl ai-title-panel" style="font-size:110px; line-height:1.18; margin-top:30px;">{% for line in c.title_lines %}{{ hl_title(line, c.hl) }}{% if not loop.last %}<br>{% endif %}{% endfor %}</h1>
+  </div>
+  <div style="position:absolute; bottom:120px; left:0; right:0; text-align:center; z-index:2;">
+    <span class="hook">{{ c.hook }}</span>
+  </div>
+  <div class="footer-bar" style="z-index:2;"><span>새 콘텐츠</span><span>{{ brand.handle }}</span></div>
+</div>
+
+{% else %}
 <div class="canvas">
   <div class="top-row">
     <span class="badge"><span class="dot"></span>{{ brand.name }}</span>
@@ -42,29 +111,42 @@
   <div class="center">
     <span class="kicker">{{ c.kicker }}</span>
     <h1 class="title-xl">{% for line in c.title_lines %}{{ hl_title(line, c.hl) }}{% if not loop.last %}<br>{% endif %}{% endfor %}</h1>
+    {% if c.cover_bubble %}
+    <div class="bubble-lg" style="transform:rotate(-2.5deg); margin-bottom:34px;">{{ c.cover_bubble | safe }}</div>
+    {% else %}
     <div class="hook">{{ c.hook }}</div>
+    {% endif %}
     <div class="char-wrap">
-      <span class="spark" style="left:-64px; top:56px;">★</span>
-      <span class="spark s2" style="right:-58px; top:110px;">★</span>
-      {{ chars['coin'] | safe }}
+      <span class="spark" style="left:-70px; top:60px;">★</span>
+      <span class="spark s2" style="right:-64px; top:120px;">★</span>
+      {{ chars[c.cover_pose or 'coin'] | safe }}
       <div class="ground"></div>
     </div>
   </div>
-  <div class="footer-bar"><span>새 콘텐츠</span><span>저장해두고 따라하기 →</span></div>
+  <div class="footer-bar"><span>새 콘텐츠</span><span>{{ c.cover_teaser or '저장해두고 따라하기 →' }}</span></div>
 </div>
+{% endif %}
 
+<!-- ═══════════ 본문 카드 ═══════════ -->
 {% for card in c.cards %}
 {% set n = loop.index + 1 %}
 <div class="canvas">
   <div class="top-row"><span class="badge"><span class="dot"></span>{{ brand.name }}</span><span class="page-no">{{ '%02d' % n }} / {{ '%02d' % total }}</span></div>
   <div class="body-content">
+    {% if card.q %}
+    <div class="q-row">
+      <div class="avatar">{{ chars[card.q_pose or 'think'] | safe }}</div>
+      <div class="say">{{ card.q | safe }}</div>
+    </div>
+    {% else %}
     <div class="section-kicker">{{ card.kicker }}</div>
+    {% endif %}
     <h2 class="section-title">{{ hl_title(card.title, card.hl) }}</h2>
 
-    {% if card.type == 'info' %}
-    <div class="info-card">
+    {% if card.type == 'info' or card.type == 'invert' %}
+    <div class="info-card{% if card.type == 'invert' %} invert-card{% endif %}">
       {% if card.heading %}<h3>{{ card.heading }}</h3>{% endif %}
-      {% for p in card.paras %}<p {% if not loop.first %}style="margin-top:24px;"{% endif %}>{{ p | safe }}</p>{% endfor %}
+      {% for p in card.paras %}<p {% if not loop.first %}style="margin-top:26px;"{% endif %}>{{ p | safe }}</p>{% endfor %}
     </div>
 
     {% elif card.type == 'table' %}
@@ -79,6 +161,13 @@
     <div class="big-num-card">
       <div class="label">{{ card.label }}</div>
       <div class="num">{{ card.num }}</div>
+      <div class="sub">{{ card.sub | safe }}</div>
+    </div>
+
+    {% elif card.type == 'fullbleed_num' %}
+    <div class="fb-num">
+      <div class="label">{{ card.label | safe }}</div>
+      <div class="num" style="font-size:{{ num_size(card.num, 340, 880) }}px;">{{ num_split(card.num) }}</div>
       <div class="sub">{{ card.sub | safe }}</div>
     </div>
 
@@ -100,15 +189,12 @@
 
     <div class="disclaimer">{{ brand.disclaimer }}</div>
   </div>
-  <div class="char-corner">
-    {% if card.bubble %}<div class="bubble">{{ card.bubble | safe }}</div>{% endif %}
-    {{ chars[card.pose or 'base'] | safe }}
-  </div>
+  {{ corner(card) }}
   <div class="footer-bar"><span>{{ brand.handle }}</span><span>{{ '%02d' % n }}</span></div>
 </div>
 {% endfor %}
 
-<!-- CTA -->
+<!-- ═══════════ CTA ═══════════ -->
 <div class="canvas">
   <div class="top-row"><span class="badge"><span class="dot"></span>{{ brand.name }}</span><span class="page-no">{{ '%02d' % total }} / {{ '%02d' % total }}</span></div>
   <div class="cta-center">
