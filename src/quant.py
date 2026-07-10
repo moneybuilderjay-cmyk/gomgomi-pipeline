@@ -110,11 +110,29 @@ def build_content(d):
         "caption": caption, "hashtags": tags,
     }
 
-def maybe_run(cfg):
-    """화/목/토 KST, 피드 URL이 설정돼 있고 오늘 건이 없으면 생성→승인요청"""
+def _load_feed():
+    """오늘의 종목 데이터 로드 — ① 리포 파일(data/quant_today.json, 대시보드가 커밋)
+    ② QUANT_FEED_URL 순으로 시도. 파일은 date가 오늘(KST)일 때만 사용."""
+    import json as _json
+    p = os.path.join(BASE, "data", "quant_today.json")
+    if os.path.exists(p):
+        try:
+            with open(p, encoding="utf-8") as f:
+                d = _json.load(f)
+            if isinstance(d, list):
+                d = d[0]
+            if d.get("date") == _kst("%Y-%m-%d"):
+                return d
+            print(f"[quant] quant_today.json 날짜({d.get('date')})가 오늘이 아님 — 스킵")
+        except Exception as e:
+            print(f"[quant] 파일 로드 실패: {e}")
     url = os.environ.get("QUANT_FEED_URL")
-    if not url:
-        return
+    if url:
+        return fetch_today(url)
+    return None
+
+def maybe_run(cfg):
+    """화/목/토 KST, 데이터가 있고 오늘 건이 없으면 생성→승인요청"""
     wd = (int(_kst("%w")) + 6) % 7  # 0=월
     if wd not in QUANT_WEEKDAYS:
         return
@@ -122,7 +140,9 @@ def maybe_run(cfg):
     topic_id = f"quant-{today}"
     if any(it["topic_id"] == topic_id for it in state._load()["items"]):
         return
-    d = fetch_today(url)
+    d = _load_feed()
+    if not d:
+        return
     content = build_content(d)
     caption = content["caption"] + "\n\n" + " ".join(content["hashtags"])
     caption += "\n\n" + cfg["brand"]["disclaimer"]
