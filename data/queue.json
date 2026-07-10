@@ -18,7 +18,8 @@
       "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/t002",
       "n_cards": 8,
       "status": "pending_approval",
-      "created": "2026-07-07 08:57:56"
+      "created": "2026-07-07 08:57:56",
+      "resent_ts": 1783686309.0363157
     },
     {
       "id": "20260707-12b6bf",
@@ -30,7 +31,8 @@
       "status": "pending_approval",
       "created": "2026-07-07 13:02:47",
       "lead": false,
-      "lead_title": null
+      "lead_title": null,
+      "resent_ts": 1783686309.0363157
     },
     {
       "id": "20260710-f62be4",
@@ -43,6 +45,17 @@
       "created": "2026-07-10 11:34:18",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260710-bd5e81",
+      "topic_id": "quant-20260710",
+      "topic_title": "[종목] 네비우스 NBIS",
+      "caption": "[종목 기록] 네비우스 (NBIS) — AI 학습용 GPU를 빌려주는 네오클라우드\n\n매주 화·목·토, 데이터로 미국 종목 하나씩 기록합니다.\n저장해두고 다음 주와 비교해보세요 🐻\n\n※ 개인 기록·교육 목적이며 매수/매도 추천이 아닙니다. 투자 판단과 책임은 본인에게 있습니다.\n\n#미국주식 #해외주식 #네비우스 #NBIS #주식공부 #종목분석 #재테크 #서학개미 #경제공부 #곰곰이\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/quant-20260710",
+      "n_cards": 8,
+      "status": "pending_approval",
+      "created": "2026-07-10 12:25:16",
+      "quant": true
     }
   ],
   "proposals": [
