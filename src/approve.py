@@ -38,10 +38,12 @@ def process_updates():
     offset = 0
     if os.path.exists(offset_file):
         offset = int(open(offset_file).read().strip() or 0)
-    resp = _call("getUpdates", json={"offset": offset + 1, "timeout": 0})
+    resp = _call("getUpdates", json={"offset": offset + 1, "timeout": 0,
+                                     "allowed_updates": ["message", "callback_query"]})
     print(f"[approve] \uc218\uc2e0 \uc5c5\ub370\uc774\ud2b8 {len(resp.get('result', []))}\uac74")
     for upd in resp.get("result", []):
         offset = max(offset, upd["update_id"])
+        print(f"[approve] update {upd['update_id']}: keys={list(upd.keys())}")
         cq = upd.get("callback_query")
         if not cq:
             continue
