@@ -48,6 +48,10 @@ def generate_candidates(category, headlines, market_ctx):
     text = "".join(b.text for b in resp.content if getattr(b, "type", "") == "text").strip()
     if text.startswith("```"):
         text = text.split("```")[1].lstrip("json").strip()
+    if not text.startswith("["):  # 프리앰블/후행 텍스트 제거 폴백
+        s, e = text.find("["), text.rfind("]")
+        if s != -1 and e > s:
+            text = text[s:e + 1]
     return json.loads(text)[:3]
 
 def today_kst():
@@ -72,6 +76,7 @@ def send_candidates(prop):
     for i, c in enumerate(prop["candidates"], 1):
         lines.append(f"{i}️⃣ {c['title']}\n   ↳ {c['angle']}\n   🎁 무료자료: {c['lead_title']} — {c['lead_desc']}\n")
     lines.append("번호를 선택하세요. (자료O = 무료자료 CTA 포함 / 자료X = 일반 게시물)")
+    lines.append("버튼이 안 먹으면 답장으로: 1~3 (자료O) / 1x~3x (자료X) / 스킵")
     kb = {"inline_keyboard": [
         [{"text": f"{i} 자료O", "callback_data": f"sel:{prop['id']}:{i}:1"} for i in (1, 2, 3)],
         [{"text": f"{i} 자료X", "callback_data": f"sel:{prop['id']}:{i}:0"} for i in (1, 2, 3)],

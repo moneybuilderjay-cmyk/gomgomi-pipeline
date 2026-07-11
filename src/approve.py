@@ -27,8 +27,56 @@ def send_for_approval(item, card_paths):
         {"text": "❌ 반려", "callback_data": f"reject:{item['id']}"},
     ]]}
     text = (f"[승인 요청] {item['topic_title']}\n\n--- 캡션 ---\n{item['caption'][:900]}"
-            f"\n\nID: {item['id']}")
+            f"\n\nID: {item['id']}"
+            f"\n(버튼이 안 되면 '승인 {item['id']}' 또는 '반려 {item['id']}'라고 답장)")
     _call("sendMessage", json={"chat_id": chat, "text": text, "reply_markup": kb})
+
+def _handle_text(msg, results):
+    """텍스트 답장 폴백 — 콜백 버튼은 텔레그램이 짧게만 보관해 폴링 주기상 유실됨.
+    선택: "1"~"3"(자료O), "1x"~"3x"(자료X), "스킵"
+    승인: "승인" 또는 "승인 <ID>" / 반려: "반려" 또는 "반려 <ID>" (ID 생략 시 최근 대기 건)"""
+    import re, state
+    txt = (msg.get("text") or "").strip().lower().replace(" ", "")
+    if not txt:
+        return
+    m = re.fullmatch(r"([123])(x)?", txt)
+    if m or txt in ("스킵", "skip"):
+        q = state._load()
+        waiting = [p for p in q.get("proposals", []) if p.get("status") == "awaiting_selection"]
+        if not waiting:
+            notify("선택 대기 중인 후보가 없어요.")
+            return
+        p = waiting[-1]  # 가장 최근 제안
+        if txt in ("스킵", "skip"):
+            p["status"] = "skipped"
+            results[f"proposal:{p['id']}"] = "skipped(text)"
+        else:
+            p["status"] = "selected"
+            p["selected"] = int(m.group(1))
+            p["lead"] = m.group(2) is None
+            results[f"proposal:{p['id']}"] = f"sel {p['selected']} lead={p['lead']} (text)"
+        state._save(q)
+        notify(f"접수! [{p.get('date','')}] {p['candidates'][p['selected']-1]['title'] if p.get('selected') else '스킵'}"
+               if p.get("selected") else "오늘은 스킵할게요.")
+        return
+    m = re.fullmatch(r"(승인|반려|거절)((20\d{6}-[0-9a-f]{6}))?", txt)
+    if m:
+        action = m.group(1)
+        item_id = m.group(2)
+        q = state._load()
+        pending = [i for i in q.get("items", []) if i.get("status") == "pending_approval"]
+        target = None
+        if item_id:
+            target = next((i for i in pending if i["id"] == item_id), None)
+        elif pending:
+            target = pending[-1]
+        if not target:
+            notify(f"대상을 못 찾았어요. 대기 중: {', '.join(i['id'] for i in pending) or '없음'}\n'승인 <ID>' 형식으로 답장해주세요.")
+            return
+        status = "approved" if action == "승인" else "rejected"
+        state.set_status(target["id"], status)
+        results[target["id"]] = f"{status}(text)"
+        notify(f"{'✅ 승인' if status == 'approved' else '❌ 반려'} 처리: {target['topic_title']} ({target['id']})")
 
 def process_updates():
     """콜백 수집 → {item_id: 'approved'|'rejected'} 반환"""
@@ -44,6 +92,9 @@ def process_updates():
     for upd in resp.get("result", []):
         offset = max(offset, upd["update_id"])
         print(f"[approve] update {upd['update_id']}: keys={list(upd.keys())}")
+        msg = upd.get("message")
+        if msg and str(msg.get("chat", {}).get("id")) == str(os.environ.get("TELEGRAM_CHAT_ID", "")):
+            _handle_text(msg, results)
         cq = upd.get("callback_query")
         if not cq:
             continue
