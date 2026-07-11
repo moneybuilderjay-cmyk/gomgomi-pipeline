@@ -105,18 +105,28 @@ def generate_content(topic, headlines, lead=True, category=None, market_ctx=""):
             f"오늘의 경제 헤드라인(참고, 관련 있을 때만 활용): {headlines}\n"
             f"시장 데이터(있으면 수치 활용, 없으면 수치 단정 금지): {market_ctx}\n"
             f"{lead_inst}\n위 주제로 카드뉴스 JSON을 생성해라.")
-    resp = client.messages.create(
-        model=cfg["claude"]["model"], max_tokens=cfg["claude"]["max_tokens"],
-        system=SYSTEM, messages=[{"role": "user", "content": user}],
-    )
-    text = "".join(b.text for b in resp.content if getattr(b, "type", "") == "text").strip()
-    if text.startswith("```"):
-        text = text.split("```")[1].lstrip("json").strip()
-    if not text.startswith("{"):  # 프리앰블/후행 텍스트 제거 폴백
-        s, e = text.find("{"), text.rfind("}")
-        if s != -1 and e > s:
-            text = text[s:e + 1]
-    data = json.loads(text)
+    def _call_json():
+        # assistant 프리필("{")로 프리앰블·코드펜스 원천 차단
+        resp = client.messages.create(
+            model=cfg["claude"]["model"], max_tokens=cfg["claude"]["max_tokens"],
+            system=SYSTEM, messages=[{"role": "user", "content": user},
+                                     {"role": "assistant", "content": "{"}],
+        )
+        t = "{" + "".join(b.text for b in resp.content if getattr(b, "type", "") == "text")
+        print(f"[generate] stop={resp.stop_reason} len={len(t)}")
+        t = t.strip()
+        e = t.rfind("}")
+        if e != -1:
+            t = t[:e + 1]
+        return t
+
+    text = _call_json()
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as err:
+        print(f"[generate] 1차 파싱 실패({err}) head={text[:200]!r} tail={text[-150:]!r} — 재시도")
+        text = _call_json()
+        data = json.loads(text)
     # 최소 검증
     assert data.get("title_lines") and data.get("cards") and data.get("caption")
     return data
