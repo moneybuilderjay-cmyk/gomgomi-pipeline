@@ -43,8 +43,12 @@ def generate_candidates(category, headlines, market_ctx):
     user = (f"오늘의 카테고리: {category['name']}\n가이드: {category['guide']}\n\n"
             f"[관심 신호 — 아래는 실제로 지금 사람들이 많이 보는 것들이다]\n{market_ctx}")
     client = anthropic.Anthropic()
-    resp = client.messages.create(model=cfg["claude"]["model"], max_tokens=2000,
-        system=system, messages=[{"role": "user", "content": user}])
+    kwargs = dict(model=cfg["claude"]["model"], max_tokens=8000,
+                  system=system, messages=[{"role": "user", "content": user}])
+    try:  # sonnet-5 기본 thinking이 max_tokens 잠식 방지
+        resp = client.messages.create(**kwargs, thinking={"type": "disabled"})
+    except Exception:
+        resp = client.messages.create(**kwargs)
     text = "".join(b.text for b in resp.content if getattr(b, "type", "") == "text").strip()
     if text.startswith("```"):
         text = text.split("```")[1].lstrip("json").strip()

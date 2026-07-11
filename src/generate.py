@@ -109,12 +109,15 @@ def generate_content(topic, headlines, lead=True, category=None, market_ctx=""):
             f"시장 데이터(있으면 수치 활용, 없으면 수치 단정 금지): {market_ctx}\n"
             f"{lead_inst}\n위 주제로 카드뉴스 JSON을 생성해라.")
     def _call_json(extra=""):
-        # sonnet-5는 assistant 프리필 미지원 → 강건한 추출 + 진단 로그
+        # sonnet-5: 프리필 미지원 + 기본 thinking이 max_tokens를 잠식 → thinking 비활성화
         import re
-        resp = client.messages.create(
-            model=cfg["claude"]["model"], max_tokens=cfg["claude"]["max_tokens"],
-            system=SYSTEM, messages=[{"role": "user", "content": user + extra}],
-        )
+        kwargs = dict(model=cfg["claude"]["model"], max_tokens=cfg["claude"]["max_tokens"],
+                      system=SYSTEM, messages=[{"role": "user", "content": user + extra}])
+        try:
+            resp = client.messages.create(**kwargs, thinking={"type": "disabled"})
+        except Exception as think_err:
+            print(f"[generate] thinking=disabled 미지원({type(think_err).__name__}) — 기본 설정으로 재호출")
+            resp = client.messages.create(**kwargs)
         t = "".join(b.text for b in resp.content if getattr(b, "type", "") == "text").strip()
         print(f"[generate] stop={resp.stop_reason} len={len(t)} head={t[:120]!r}")
         t = re.sub(r"```(?:json)?", "", t)
