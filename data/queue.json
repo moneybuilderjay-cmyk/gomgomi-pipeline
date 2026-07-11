@@ -19,7 +19,7 @@
       "n_cards": 8,
       "status": "pending_approval",
       "created": "2026-07-07 08:57:56",
-      "resent_ts": 1783686309.0363157
+      "resent_ts": 1783766839.4914439
     },
     {
       "id": "20260707-12b6bf",
@@ -32,7 +32,7 @@
       "created": "2026-07-07 13:02:47",
       "lead": false,
       "lead_title": null,
-      "resent_ts": 1783686309.0363157
+      "resent_ts": 1783766839.4914439
     },
     {
       "id": "20260710-f62be4",
@@ -55,7 +55,8 @@
       "n_cards": 8,
       "status": "pending_approval",
       "created": "2026-07-10 12:25:16",
-      "quant": true
+      "quant": true,
+      "resent_ts": 1783766839.4914439
     }
   ],
   "proposals": [
