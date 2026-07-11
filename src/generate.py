@@ -96,6 +96,10 @@ def generate_content(topic, headlines, lead=True, category=None, market_ctx=""):
     text = "".join(b.text for b in resp.content if getattr(b, "type", "") == "text").strip()
     if text.startswith("```"):
         text = text.split("```")[1].lstrip("json").strip()
+    if not text.startswith("{"):  # 프리앰블/후행 텍스트 제거 폴백
+        s, e = text.find("{"), text.rfind("}")
+        if s != -1 and e > s:
+            text = text[s:e + 1]
     data = json.loads(text)
     # 최소 검증
     assert data.get("title_lines") and data.get("cards") and data.get("caption")
