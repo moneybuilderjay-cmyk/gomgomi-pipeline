@@ -3,6 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <style>
+/* ============ 웹폰트 (Actions 러너에 한글 폰트 없음 → CDN 로드) ============ */
+@font-face { font-family: 'GmarketSansBold';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); }
+@font-face { font-family: 'Pretendard'; font-weight: 400;
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2') format('woff2'); }
+@font-face { font-family: 'Pretendard'; font-weight: 700;
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Bold.woff2') format('woff2'); }
+@font-face { font-family: 'Pretendard'; font-weight: 800;
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-ExtraBold.woff2') format('woff2'); }
+@font-face { font-family: 'Pretendard'; font-weight: 900;
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Black.woff2') format('woff2'); }
+
 /* ============================================
    곰곰이 경제공부 — 디자인 시스템 v1
    톤: 라이트 오렌지 / 카와이 스티커 스타일
@@ -264,6 +276,10 @@
 .ai-title-panel { background:rgba(255,246,232,.86); display:inline-block;
   padding:18px 44px 26px; border-radius:36px; }
 
+/* 본문 콘텐츠 세로 중앙 정렬 — 콘텐츠가 짧아도 균형 유지 */
+.content-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 120px; }
+.content-mid > .info-card, .content-mid > .vs-table, .content-mid > .big-num-card { margin-bottom: 0; }
+
 .canvas { page-break-after: always; }
 .top-row { display: flex; justify-content: space-between; align-items: center; padding: 48px 60px 0; }
 .badge, .kicker, .hook { white-space: nowrap; }
@@ -349,12 +365,12 @@
     <text x="352" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="84" font-weight="bold" fill="#E9701D" stroke="#5B3A22" stroke-width="3" transform="rotate(12 352 50)">?</text>
   </g>
 </svg></div>
-        <div class="say">메타 주가 오른게<br>나랑 무슨 상관?</div>
+        <div class="say">메타만 이번주<br>많이 올랐대</div>
       </div>
       
       <div class="msg me">
         <div class="avatar">₩</div>
-        <div class="say">AI 밸류체인 전체가<br><b>같이 흔들렸어요</b></div>
+        <div class="say">그 뒤에서 <b>AI 밸류체인</b><br>전체가 움직였어요</div>
       </div>
       
       <div class="msg">
@@ -404,13 +420,13 @@
     </g>
   </g>
 </svg></div>
-        <div class="say">그럼 나만<br>놓친 거야?</div>
+        <div class="say">나만 몰랐네…</div>
       </div>
       
     </div>
     <div style="text-align:center; margin-top:56px;">
-      <h1 class="title-xl" style="font-size:96px; line-height:1.2; margin-bottom:30px;">메타가<br>쏘아올린 <span class="hl">신호</span></h1>
-      <span class="swipe-pill">그 신호, 이미 늦지 않았어요 →</span>
+      <h1 class="title-xl" style="font-size:96px; line-height:1.2; margin-bottom:30px;">메타 <span class="hl">폭등한</span> 날<br>나만 놓친 신호</h1>
+      <span class="swipe-pill">그 착각, 손해로 이어져요 →</span>
     </div>
   </div>
   <div class="footer-bar"><span>새 콘텐츠</span><span>@gomgomi.economy</span></div>
@@ -472,23 +488,24 @@
     <text x="352" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="84" font-weight="bold" fill="#E9701D" stroke="#5B3A22" stroke-width="3" transform="rotate(12 352 50)">?</text>
   </g>
 </svg></div>
-      <div class="say">나스닥 오른 거<br>나랑 무슨 상관이야?</div>
+      <div class="say">나만 몰랐던 거야?</div>
     </div>
     
-    <h2 class="section-title">나만 <span class="hl">몰랐다고</span>?</h2>
-
+    <h2 class="section-title">다들 <span class="hl">신났는데</span></h2>
+    <div class="content-mid">
     
     <div class="info-card">
-      
-      <p >메타 주가가 이번 주<br>급등했다는 소식</p><p style="margin-top:26px;">타임라인에서 봤는데<br>내 계좌는 그대로였다</p>
+      <h3>나만 소외된 기분</h3>
+      <p >단톡방에 메타 얘기만<br>가득했어요</p><p style="margin-top:26px;">"나 이번주 대박" 소리에<br>혼자 어색하게 웃었죠</p>
     </div>
 
     
+    </div>
 
     <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
   </div>
   <div class="char-corner">
-    
+    <div class="bubble nw" style="margin-bottom:150px;">그냥 오른 거 아니었어?</div>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
@@ -591,29 +608,24 @@
     <text x="352" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="84" font-weight="bold" fill="#E9701D" stroke="#5B3A22" stroke-width="3" transform="rotate(12 352 50)">?</text>
   </g>
 </svg></div>
-      <div class="say">메타만 오른 거야?</div>
+      <div class="say">왜 다 같이 올라?</div>
     </div>
     
-    <h2 class="section-title">누가 <span class="hl">웃었나</span></h2>
+    <h2 class="section-title">메타 <span class="hl">혼자</span>가 아니었다</h2>
+    <div class="content-mid">
+    
+    <div class="info-card invert-card">
+      <h3>밸류체인 전체가 움직였다</h3>
+      <p >메타, 이번 주<br>수년래 최고 주간 상승률</p><p style="margin-top:26px;">반도체부터 클라우드까지<br>AI 관련주가 같이 뛰었어요</p>
+    </div>
 
     
-    <table class="vs-table">
-      <tr><th  style="width:30%">구간</th><th  >이번 주 반응</th><th class="win" >의미</th></tr>
-      
-      <tr><td >인프라(반도체)</td><td >동반 강세</td><td class="win">수요 재확인</td></tr>
-      
-      <tr><td >플랫폼(빅테크)</td><td >메타 주도 급등</td><td class="win">광고+AI 시너지</td></tr>
-      
-      <tr><td >응용(소프트웨어)</td><td >혼조</td><td class="win">선별 장세</td></tr>
-      
-    </table>
-
-    
+    </div>
 
     <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
   </div>
   <div class="char-corner">
-    
+    <div class="bubble" style="margin-bottom:150px;">메타 혼자 잘된 게 아니었네</div>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
@@ -628,8 +640,10 @@
     <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
     <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
     
-    <ellipse fill="#C9854A" cx="175" cy="392" rx="24" ry="46" transform="rotate(12 175 392)"></ellipse>
-    <ellipse fill="#F7E4C3" cx="172" cy="430" rx="20" ry="17"></ellipse>
+    <ellipse fill="#C9854A" cx="172" cy="345" rx="52" ry="26" transform="rotate(30 172 345)"></ellipse>
+    <ellipse fill="#C9854A" cx="328" cy="345" rx="52" ry="26" transform="rotate(-30 328 345)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="128" cy="320" rx="20" ry="17"></ellipse>
+    <ellipse fill="#F7E4C3" cx="372" cy="320" rx="20" ry="17"></ellipse>
     
     <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
     <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
@@ -643,21 +657,19 @@
     <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
     <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
     
-    <ellipse fill="#3A2416" stroke="none" cx="183" cy="216" rx="24" ry="28"></ellipse>
-    <ellipse fill="#3A2416" stroke="none" cx="317" cy="216" rx="24" ry="28"></ellipse>
-    <circle fill="#FFFFFF" stroke="none" cx="190" cy="207" r="8"></circle>
-    <circle fill="#FFFFFF" stroke="none" cx="176" cy="224" r="3.5"></circle>
-    <circle fill="#FFFFFF" stroke="none" cx="324" cy="207" r="8"></circle>
-    <circle fill="#FFFFFF" stroke="none" cx="310" cy="224" r="3.5"></circle>
+    <circle fill="#3A2416" stroke="none" cx="183" cy="216" r="29"></circle>
+    <circle fill="#3A2416" stroke="none" cx="317" cy="216" r="29"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="190" cy="206" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="324" cy="206" r="8"></circle>
     
     <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
     
-    <path fill="none" stroke-width="5" d="M 236 266 Q 243 260 250 266 Q 257 272 264 266"></path>
+    <ellipse fill="#5B3A22" stroke="none" cx="250" cy="280" rx="15" ry="18"></ellipse>
     
-    <ellipse fill="#C9854A" cx="338" cy="316" rx="24" ry="48" transform="rotate(-14 338 316)"></ellipse>
-    <ellipse fill="#F7E4C3" cx="346" cy="268" rx="20" ry="17"></ellipse>
-    
-    <text x="352" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="84" font-weight="bold" fill="#E9701D" stroke="#5B3A22" stroke-width="3" transform="rotate(12 352 50)">?</text>
+    <g transform="rotate(8 250 36)">
+      <rect fill="#E9701D" x="240" y="4" width="20" height="38" rx="10"></rect>
+      <circle fill="#E9701D" cx="250" cy="62" r="9"></circle>
+    </g>
   </g>
 </svg>
   </div>
@@ -667,77 +679,6 @@
 
 <div class="canvas">
   <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">04 / 08</span></div>
-  <div class="body-content">
-    
-    <div class="section-kicker">이번 주 마켓 브리핑</div>
-    
-    <h2 class="section-title">바뀐 것 <span class="hl">3가지</span></h2>
-
-    
-    <div class="info-card" style="display:flex; flex-direction:column; gap:34px;">
-      <div class="check-item">메타, 수년 내 최고 주간 상승률</div><div class="check-item">AI 관련주 전반 동반 강세</div><div class="check-item">실적 시즌 앞두고 기대감 선반영</div>
-    </div>
-
-    
-
-    <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
-  </div>
-  <div class="char-corner">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <defs>
-    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
-    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
-  </defs>
-  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
-    
-    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
-    
-    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
-    
-    <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
-    <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
-    
-    <ellipse fill="#C9854A" cx="200" cy="364" rx="54" ry="27" transform="rotate(16 200 364)"></ellipse>
-    <ellipse fill="#C9854A" cx="300" cy="364" rx="54" ry="27" transform="rotate(-16 300 364)"></ellipse>
-    
-    <circle fill="#FFC93C" cx="250" cy="374" r="38"></circle>
-    <circle fill="none" stroke="#E9701D" stroke-width="5" cx="250" cy="374" r="27"></circle>
-    <text x="250" y="384" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" font-weight="bold" fill="#8A5738" stroke="none">₩</text>
-    <ellipse fill="#F7E4C3" cx="216" cy="384" rx="20" ry="17"></ellipse>
-    <ellipse fill="#F7E4C3" cx="284" cy="384" rx="20" ry="17"></ellipse>
-    
-    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
-    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
-    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
-    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
-    
-    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
-    
-    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
-    
-    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
-    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
-    
-    <ellipse fill="#3A2416" stroke="none" cx="183" cy="216" rx="24" ry="28"></ellipse>
-    <ellipse fill="#3A2416" stroke="none" cx="317" cy="216" rx="24" ry="28"></ellipse>
-    <circle fill="#FFFFFF" stroke="none" cx="190" cy="207" r="8"></circle>
-    <circle fill="#FFFFFF" stroke="none" cx="176" cy="224" r="3.5"></circle>
-    <circle fill="#FFFFFF" stroke="none" cx="324" cy="207" r="8"></circle>
-    <circle fill="#FFFFFF" stroke="none" cx="310" cy="224" r="3.5"></circle>
-    
-    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
-    
-    <path fill="none" stroke-width="5" d="M 231 262 C 235 272 246 272 250 263 C 254 272 265 272 269 262"></path>
-  </g>
-</svg>
-  </div>
-  <div class="footer-bar"><span>@gomgomi.economy</span><span>04</span></div>
-</div>
-
-
-<div class="canvas">
-  <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">05 / 08</span></div>
   <div class="body-content">
     
     <div class="q-row">
@@ -787,21 +728,98 @@
     <text x="352" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="84" font-weight="bold" fill="#E9701D" stroke="#5B3A22" stroke-width="3" transform="rotate(12 352 50)">?</text>
   </g>
 </svg></div>
-      <div class="say">뭘 봐야 하는데?</div>
+      <div class="say">메타만 오른 거 아니야?</div>
     </div>
     
-    <h2 class="section-title">신호 <span class="hl">3가지</span></h2>
+    <h2 class="section-title"><span class="hl">업종 전체</span>가 반응했다</h2>
+    <div class="content-mid">
+    
+    <table class="vs-table">
+      <tr><th  style="width:30%"></th><th class="win" >이번주</th><th  >직전주</th></tr>
+      
+      <tr><td >AI 반도체</td><td class="win">강세</td><td >보합</td></tr>
+      
+      <tr><td >클라우드</td><td class="win">강세</td><td >약세</td></tr>
+      
+      <tr><td >광고테크</td><td class="win">강세</td><td >보합</td></tr>
+      
+      <tr><td >소프트웨어</td><td class="win">혼조</td><td >약세</td></tr>
+      
+    </table>
 
     
+    </div>
+
+    <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
+  </div>
+  <div class="char-corner">
     
-    <div class="step"><div class="n">1</div><div class="t">1. 메타 실적 발표 — AI 투자 대비 매출 증명되나</div></div>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
+    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
+  </defs>
+  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
     
-    <div class="step"><div class="n">2</div><div class="t">2. 반도체·엔비디아 밸류체인 강세 지속 여부</div></div>
+    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
     
-    <div class="step"><div class="n">3</div><div class="t">3. MS·구글 실적도 AI 스토리 뒷받침하나</div></div>
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
     
+    <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
+    <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
+    
+    <ellipse fill="#C9854A" cx="175" cy="392" rx="24" ry="46" transform="rotate(12 175 392)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="172" cy="430" rx="20" ry="17"></ellipse>
+    
+    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
+    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
+    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
+    
+    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
+    
+    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
+    
+    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
+    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
+    
+    <ellipse fill="#3A2416" stroke="none" cx="183" cy="216" rx="24" ry="28"></ellipse>
+    <ellipse fill="#3A2416" stroke="none" cx="317" cy="216" rx="24" ry="28"></ellipse>
+    <circle fill="#FFFFFF" stroke="none" cx="190" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="176" cy="224" r="3.5"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="324" cy="207" r="8"></circle>
+    <circle fill="#FFFFFF" stroke="none" cx="310" cy="224" r="3.5"></circle>
+    
+    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
+    
+    <path fill="none" stroke-width="5" d="M 236 266 Q 243 260 250 266 Q 257 272 264 266"></path>
+    
+    <ellipse fill="#C9854A" cx="338" cy="316" rx="24" ry="48" transform="rotate(-14 338 316)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="346" cy="268" rx="20" ry="17"></ellipse>
+    
+    <text x="352" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="84" font-weight="bold" fill="#E9701D" stroke="#5B3A22" stroke-width="3" transform="rotate(12 352 50)">?</text>
+  </g>
+</svg>
+  </div>
+  <div class="footer-bar"><span>@gomgomi.economy</span><span>04</span></div>
+</div>
+
+
+<div class="canvas">
+  <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">05 / 08</span></div>
+  <div class="body-content">
+    
+    <div class="section-kicker">이번 주 신호 정리</div>
+    
+    <h2 class="section-title"><span class="hl">진짜 신호</span>는 이거</h2>
+    <div class="content-mid">
+    
+    <div class="info-card" style="display:flex; flex-direction:column; gap:34px;">
+      <div class="check-item">메타 실적보다 AI 투자 기대감이 주가를 밀어올렸다</div><div class="check-item">반도체·클라우드까지 밸류체인 전체가 강세로 돌아섰다</div><div class="check-item">실적 시즌 앞두고 큰손들이 미리 움직이기 시작했다</div>
+    </div>
 
     
+    </div>
 
     <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
   </div>
@@ -860,8 +878,27 @@
   <div class="top-row"><span class="badge"><span class="dot"></span>곰곰이의 경제공부</span><span class="page-no">06 / 08</span></div>
   <div class="body-content">
     
-    <div class="q-row">
-      <div class="avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <div class="section-kicker">그래서 다음 주는</div>
+    
+    <h2 class="section-title">이렇게 <span class="hl">체크하세요</span></h2>
+    <div class="content-mid">
+    
+    
+    <div class="step"><div class="n">1</div><div class="t">1단계: 다음 주 빅테크 실적 발표 일정부터 확인하기</div></div>
+    
+    <div class="step"><div class="n">2</div><div class="t">2단계: 반도체·클라우드 관련주 흐름 같이 살펴보기</div></div>
+    
+    <div class="step"><div class="n">3</div><div class="t">3단계: 급등에 바로 올라타지 말고 매수 타이밍 복기하기</div></div>
+    
+
+    
+    </div>
+
+    <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
+  </div>
+  <div class="char-corner">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
     <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
@@ -875,8 +912,8 @@
     <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
     <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
     
-    <ellipse fill="#C9854A" cx="175" cy="392" rx="24" ry="46" transform="rotate(12 175 392)"></ellipse>
-    <ellipse fill="#F7E4C3" cx="172" cy="430" rx="20" ry="17"></ellipse>
+    <ellipse fill="#C9854A" cx="185" cy="385" rx="40" ry="23" transform="rotate(10 185 385)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="218" cy="390" rx="20" ry="17"></ellipse>
     
     <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
     <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
@@ -899,75 +936,13 @@
     
     <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
     
-    <path fill="none" stroke-width="5" d="M 236 266 Q 243 260 250 266 Q 257 272 264 266"></path>
+    <path fill="none" stroke-width="5" d="M 231 262 C 235 272 246 272 250 263 C 254 272 265 272 269 262"></path>
     
-    <ellipse fill="#C9854A" cx="338" cy="316" rx="24" ry="48" transform="rotate(-14 338 316)"></ellipse>
-    <ellipse fill="#F7E4C3" cx="346" cy="268" rx="20" ry="17"></ellipse>
+    <ellipse fill="#C9854A" cx="360" cy="310" rx="24" ry="50" transform="rotate(38 360 310)"></ellipse>
+    <ellipse fill="#F7E4C3" cx="394" cy="262" rx="20" ry="17"></ellipse>
     
-    <text x="352" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="84" font-weight="bold" fill="#E9701D" stroke="#5B3A22" stroke-width="3" transform="rotate(12 352 50)">?</text>
-  </g>
-</svg></div>
-      <div class="say">그럼 나도 지금<br>사야 하나?</div>
-    </div>
-    
-    <h2 class="section-title"><span class="hl">따라</span> 사도 될까</h2>
-
-    
-    <div class="info-card invert-card">
-      
-      <p >이미 급등한 종목<br>지금 들어가는 건<br>다른 얘기다</p><p style="margin-top:26px;">신호를 읽는 것과<br>추격 매수는 다르다</p>
-    </div>
-
-    
-
-    <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
-  </div>
-  <div class="char-corner">
-    <div class="bubble" style="margin-bottom:150px;">신호만 확인하고<br>다음 실적까지 지켜보자</div>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <defs>
-    <clipPath id="headClip"><path d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path></clipPath>
-    <clipPath id="bodyClip"><ellipse cx="250" cy="398" rx="112" ry="92"></ellipse></clipPath>
-  </defs>
-  <g stroke="#5B3A22" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
-    
-    <ellipse fill="#C9854A" cx="250" cy="398" rx="112" ry="92"></ellipse>
-    
-    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#bodyClip)" cx="250" cy="414" rx="80" ry="72"></ellipse>
-    
-    <ellipse fill="#F7E4C3" cx="182" cy="480" rx="46" ry="25"></ellipse>
-    <ellipse fill="#F7E4C3" cx="318" cy="480" rx="46" ry="25"></ellipse>
-    
-    <ellipse fill="#C9854A" cx="172" cy="345" rx="52" ry="26" transform="rotate(30 172 345)"></ellipse>
-    <ellipse fill="#C9854A" cx="328" cy="345" rx="52" ry="26" transform="rotate(-30 328 345)"></ellipse>
-    <ellipse fill="#F7E4C3" cx="128" cy="320" rx="20" ry="17"></ellipse>
-    <ellipse fill="#F7E4C3" cx="372" cy="320" rx="20" ry="17"></ellipse>
-    
-    <circle fill="#C9854A" cx="150" cy="94" r="46"></circle>
-    <circle fill="#C9854A" cx="350" cy="94" r="46"></circle>
-    <circle fill="#F2B98F" stroke="none" cx="150" cy="100" r="24"></circle>
-    <circle fill="#F2B98F" stroke="none" cx="350" cy="100" r="24"></circle>
-    
-    <path fill="#C9854A" d="M 250 84 C 320 84 382 116 402 178 C 412 208 428 238 424 262 C 420 292 392 312 356 320 C 322 328 286 332 250 332 C 214 332 178 328 144 320 C 108 312 80 292 76 262 C 72 238 88 208 98 178 C 118 116 180 84 250 84 Z"></path>
-    
-    <ellipse fill="#F7E4C3" stroke="none" clip-path="url(#headClip)" cx="250" cy="282" rx="152" ry="88"></ellipse>
-    
-    <circle fill="#F5A9A0" stroke="none" cx="132" cy="266" r="26"></circle>
-    <circle fill="#F5A9A0" stroke="none" cx="368" cy="266" r="26"></circle>
-    
-    <circle fill="#3A2416" stroke="none" cx="183" cy="216" r="29"></circle>
-    <circle fill="#3A2416" stroke="none" cx="317" cy="216" r="29"></circle>
-    <circle fill="#FFFFFF" stroke="none" cx="190" cy="206" r="8"></circle>
-    <circle fill="#FFFFFF" stroke="none" cx="324" cy="206" r="8"></circle>
-    
-    <path fill="#8A5738" stroke="none" d="M 250 254 C 241 246 237 241 239 236 C 241 231 248 231 250 237 C 252 231 259 231 261 236 C 263 241 259 246 250 254 Z"></path>
-    
-    <ellipse fill="#5B3A22" stroke="none" cx="250" cy="280" rx="15" ry="18"></ellipse>
-    
-    <g transform="rotate(8 250 36)">
-      <rect fill="#E9701D" x="240" y="4" width="20" height="38" rx="10"></rect>
-      <circle fill="#E9701D" cx="250" cy="62" r="9"></circle>
-    </g>
+    <path fill="none" stroke-width="4" d="M 432 238 A 22 22 0 0 1 444 268"></path>
+    <path fill="none" stroke-width="4" d="M 442 218 A 34 34 0 0 1 460 264"></path>
   </g>
 </svg>
   </div>
@@ -982,12 +957,13 @@
     <div class="section-kicker">오늘의 핵심</div>
     
     <h2 class="section-title">이것만 <span class="hl">기억하세요</span></h2>
-
+    <div class="content-mid">
     
     <div class="info-card">
-      <div class="sum-item"><div class="n">1</div><div>메타 급등은 AI 밸류체인 재평가 신호</div></div><div class="sum-item"><div class="n">2</div><div>다음 주 실적 시즌이 진짜 승부처</div></div><div class="sum-item"><div class="n">3</div><div>신호 확인 후 판단, 추격매수는 금물</div></div>
+      <div class="sum-item"><div class="n">1</div><div>메타 급등은 AI 밸류체인 재평가 신호</div></div><div class="sum-item"><div class="n">2</div><div>반도체·클라우드까지 같이 움직였다</div></div><div class="sum-item"><div class="n">3</div><div>다음 주 실적 발표 일정부터 체크하자</div></div>
     </div>
     
+    </div>
 
     <div class="disclaimer">※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.</div>
   </div>
