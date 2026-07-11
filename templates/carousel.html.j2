@@ -142,7 +142,7 @@
     <div class="section-kicker">{{ card.kicker }}</div>
     {% endif %}
     <h2 class="section-title">{{ hl_title(card.title, card.hl) }}</h2>
-
+    <div class="content-mid">
     {% if card.type == 'info' or card.type == 'invert' %}
     <div class="info-card{% if card.type == 'invert' %} invert-card{% endif %}">
       {% if card.heading %}<h3>{{ card.heading }}</h3>{% endif %}
@@ -186,6 +186,7 @@
       {% for it in card['items'] %}<div class="sum-item"><div class="n">{{ loop.index }}</div><div>{{ it }}</div></div>{% endfor %}
     </div>
     {% endif %}
+    </div>
 
     <div class="disclaimer">{{ brand.disclaimer }}</div>
   </div>
