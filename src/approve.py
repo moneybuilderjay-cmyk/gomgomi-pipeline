@@ -28,7 +28,7 @@ def send_for_approval(item, card_paths):
     ]]}
     text = (f"[승인 요청] {item['topic_title']}\n\n--- 캡션 ---\n{item['caption'][:900]}"
             f"\n\nID: {item['id']}"
-            f"\n(버튼이 안 되면 '승인 {item['id']}' 또는 '반려 {item['id']}'라고 답장)")
+            f"\n(버튼이 안 되면 '승인 {item['id']}' / '반려 {item['id']}' / '재생성 {item['id']}'으로 답장)")
     _call("sendMessage", json={"chat_id": chat, "text": text, "reply_markup": kb})
 
 def _handle_text(msg, results):
@@ -58,6 +58,23 @@ def _handle_text(msg, results):
         state._save(q)
         notify(f"접수! [{p.get('date','')}] {p['candidates'][p['selected']-1]['title'] if p.get('selected') else '스킵'}"
                if p.get("selected") else "오늘은 스킵할게요.")
+        return
+    m = re.fullmatch(r"재생성((20\d{6}-[0-9a-f]{6}))?", txt)
+    if m:
+        q = state._load()
+        pending = [i for i in q.get("items", []) if i.get("status") == "pending_approval"]
+        item_id = m.group(1)
+        target = next((i for i in pending if i["id"] == item_id), None) if item_id else (pending[-1] if pending else None)
+        if not target:
+            notify("재생성 대상을 못 찾았어요. '재생성 <ID>'로 답장해주세요.")
+            return
+        target["status"] = "rejected"
+        for p in q.get("proposals", []):
+            if p["id"] == target.get("topic_id") and p.get("selected"):
+                p["status"] = "selected"
+        state._save(q)
+        results[target["id"]] = "regenerate(text)"
+        notify(f"🔄 재생성 예약: {target['topic_title']}\n다음 실행 때 새 카드로 다시 보내드려요.")
         return
     m = re.fullmatch(r"(승인|반려|거절)((20\d{6}-[0-9a-f]{6}))?", txt)
     if m:
