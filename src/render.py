@@ -49,6 +49,11 @@ def _render_playwright(html_path, out_dir):
         page = browser.new_page(viewport={"width": 1080, "height": 1350})
         page.goto("file://" + os.path.abspath(html_path))
         page.wait_for_timeout(500)
+        try:
+            page.evaluate("document.fonts.ready")  # 웹폰트 로딩 완료 대기
+            page.wait_for_timeout(700)
+        except Exception:
+            pass
         cards = page.locator(".canvas")
         for i in range(cards.count()):
             out = os.path.join(out_dir, f"card-{i+1}.jpg")
