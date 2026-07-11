@@ -1,0 +1,21 @@
+name: save-assets
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  save:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download character assets
+        run: |
+          mkdir -p assets/character_v3
+          curl -fsSL -o assets/character_v3/gomgom_hero.png "https://d8j0ntlcm91z4.cloudfront.net/user_3ESCtv4ATktvRwu8eteXNyVj4ch/hf_20260711_142453_0c3db15e-3657-4119-861a-c6f6da3cd5ca.png"
+          curl -fsSL -o assets/character_v3/gomgom_poses.png "https://d8j0ntlcm91z4.cloudfront.net/user_3ESCtv4ATktvRwu8eteXNyVj4ch/hf_20260711_142956_ccf74a71-770b-4f19-85b1-1a14517dea7f.png"
+          ls -la assets/character_v3
+      - name: Commit
+        run: |
+          git config user.name "gomgomi-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add assets/character_v3
+          git diff --cached --quiet || (git commit -m "assets: gomgom v3 character hero + pose sheet" && git push)
