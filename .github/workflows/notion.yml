@@ -1,0 +1,21 @@
+name: notion-publish
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "docs/notion/ 아래 md 파일명"
+        required: true
+        default: "isa_checklist.md"
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install requests
+      - name: Create Notion page
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_PARENT_PAGE_ID: ${{ secrets.NOTION_PARENT_PAGE_ID }}
+        run: python src/notion_publish.py "docs/notion/${{ inputs.file }}"
