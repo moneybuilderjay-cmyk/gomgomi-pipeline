@@ -50,7 +50,8 @@ def check_and_reply():
             text = c.get("text", "")
             for mg in magnets:
                 if mg["keyword"] in text:
-                    msg = f"{mg['message']}\n{_raw_url(mg['file'])}"
+                    link = mg.get("url") or _raw_url(mg["file"])
+                    msg = f"{mg['message']}\n{link}"
                     try:
                         pr = requests.post(f"{GRAPH}/{ig}/messages", json={
                             "recipient": {"comment_id": c["id"]},
