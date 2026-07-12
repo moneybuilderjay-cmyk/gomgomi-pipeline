@@ -51,26 +51,40 @@ def main():
             caption = content["caption"] + "\n\n" + " ".join(content.get("hashtags", []))
             caption += "\n\n" + cfg["brand"]["disclaimer"]
             out_dir = os.path.join(BASE, "out", p["id"])
-            html = render.render_html(content, cfg["brand"])
-            paths = render.html_to_jpegs(html, out_dir)
-            item = state.add_item(p["id"], cand["title"], caption, out_dir, len(paths))
-            # lead 메타 기록
+            item = state.add_item(p["id"], cand["title"], caption, out_dir, 0)
+            # v3 하이브리드: HTML 렌더 대신 카드잡 저장 → Cowork(Claude)가 힉스필드로 카드 생성
             qq = state._load()
             for it in qq["items"]:
                 if it["id"] == item["id"]:
+                    it["status"] = "awaiting_render"
                     it["lead"] = lead
                     it["lead_title"] = cand.get("lead_title") if lead else None
             state._save(qq)
-            approve.send_for_approval(item, paths)
+            import json as _json
+            job_dir = os.path.join(BASE, "data", "cardjobs")
+            os.makedirs(job_dir, exist_ok=True)
+            with open(os.path.join(job_dir, f"{item['id']}.json"), "w", encoding="utf-8") as f:
+                _json.dump({"item_id": item["id"], "topic_id": p["id"], "topic_title": cand["title"],
+                            "lead": lead, "content": content}, f, ensure_ascii=False, indent=2)
+            approve.notify(f"🎨 카피 완성, 카드 생성 대기: {cand['title']}\n다음 카드 배치에서 힉스필드로 제작 후 승인 요청 드려요.")
             p2 = state._load()
             for pp in p2["proposals"]:
                 if pp["id"] == p["id"]:
                     pp["status"] = "generated"
             state._save(p2)
-            print(f"[pipeline] 생성+승인요청: {cand['title']} (자료 {'O' if lead else 'X'})")
+            print(f"[pipeline] 카피 생성 → 카드잡 저장: {cand['title']} (자료 {'O' if lead else 'X'})")
 
     # 2.4) 승인 대기 리마인더 — 텔레그램 콜백은 24시간 후 만료되므로 버튼을 주기적으로 재전송
     import glob as _glob
+
+    # 2.3) 힉스필드 렌더 완료(rendered) 건 → 승인 요청
+    for item in state.get_items("rendered"):
+        paths = sorted(_glob.glob(os.path.join(BASE, "out", item["topic_id"], "card-*.jpg")))
+        if paths:
+            approve.send_for_approval(item, paths)
+            state.set_status(item["id"], "pending_approval")
+            print(f"[pipeline] 렌더 완료 → 승인 요청: {item['id']} ({len(paths)}장)")
+
     now = time.time()
     q = state._load()
     changed = False
