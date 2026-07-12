@@ -22,6 +22,8 @@ def main():
         topic_id = items[0]["topic_id"]
         out_dir = os.path.join(BASE, "out", topic_id)
         os.makedirs(out_dir, exist_ok=True)
+        for old in glob.glob(os.path.join(out_dir, "card-*.jpg")):  # 이전 렌더 잔재 제거
+            os.remove(old)
         for i, url in enumerate(urls, 1):
             r = requests.get(url, timeout=60)
             r.raise_for_status()
