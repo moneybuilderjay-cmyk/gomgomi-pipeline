@@ -105,6 +105,18 @@
       "created": "2026-07-12 02:08:20",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260713-b1cd14",
+      "topic_id": "d9a237",
+      "topic_title": "AI 버블 논쟁, 이번 주 실적표로 판가름난다 — 숫자 3개만 보면 된다",
+      "caption": "이번 주 실적 발표, 그냥 넘기면 안 됩니다\n\nAI 수요는 무제한이라면서 비용은 줄인다는 빅테크. 두 말이 동시에 진짜일 수 있을까요? 자본지출 가이던스, 클라우드 매출 성장률, 영업이익률. 이 숫자 3개만 확인하면 이번 주 변동성에 흔들리지 않습니다.\n\n저장해두고 실적 발표 때 하나씩 체크해보세요\n\n#미국주식 #AI버블 #빅테크실적 #나스닥 #클라우드 #자본지출 #실적시즌 #미국증시 #주식투자 #재테크 #직장인투자 #해외주식 #AI투자 #밸류맥싱 #곰곰아저씨 #GOMGOM #투자공부 #주식공부 #미장 #이번주증시\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/d9a237",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-07-13 00:16:05",
+      "lead": true,
+      "lead_title": "AI 실적 체크리스트"
     }
   ],
   "proposals": [
@@ -320,7 +332,9 @@
           "lead_desc": "어닝 발표 전 애널리스트 추정치 변화로 주가 급등락 가능성을 미리 가늠하는 3단계 판독 체크리스트"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 2,
+      "lead": true
     }
   ]
 }
