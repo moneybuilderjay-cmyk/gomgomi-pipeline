@@ -124,15 +124,32 @@ def main():
             print(f"[pipeline] {item['id']} 호스팅 준비 (다음 실행에서 게시)")
 
     # 4) 호스팅 완료 건 → 게시
+    # 2026-07-18 개선: ①실행당 1건만 게시(연속 게시로 IG API 한도 걸리는 것 방지)
+    # ②게시 실패 시 크래시 대신 상태 보존 — 이전에 1건 게시 성공 후 다음 건에서
+    #   예외가 나면 전체가 죽어 Commit state가 스킵되고, 이미 게시된 건이
+    #   hosting으로 남아 중복 게시될 뻔한 사고(run #65)의 재발 방지.
+    published_this_run = 0
     for item in state.get_items("hosting"):
         if item["id"] in just_copied:
             continue
         if not quant.publish_allowed(item):
             print(f"[pipeline] {item['id']} 퀀트 건 — 19시(KST) 이후 게시 대기")
             continue
+        if published_this_run >= 1:
+            print(f"[pipeline] {item['id']} 게시 대기 — 실행당 1건 제한 (다음 실행에서 게시)")
+            continue
         if os.path.exists(os.path.join(BASE, "published", item["id"])):
-            media_id = publish.publish_carousel(item, item["n_cards"])
+            try:
+                media_id = publish.publish_carousel(item, item["n_cards"])
+            except Exception as e:
+                print(f"[pipeline] 게시 실패(상태 보존, 다음 실행에서 재시도): {item['id']} — {e}")
+                try:
+                    approve.notify(f"⚠️ 게시 실패, 다음 실행에서 재시도: {item['topic_title']}\n{str(e)[:300]}")
+                except Exception:
+                    pass
+                break
             state.set_status(item["id"], "published")
+            published_this_run += 1
             approve.notify(f"✅ 게시 완료: {item['topic_title']} (media {media_id})")
             print(f"[pipeline] 게시 완료: {item['topic_title']}")
 
