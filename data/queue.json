@@ -180,6 +180,18 @@
       "created": "2026-07-18 00:13:56",
       "lead": true,
       "lead_title": "월 30만원 자산배분 시뮬레이터"
+    },
+    {
+      "id": "20260719-69b22f",
+      "topic_id": "cf4ed8",
+      "topic_title": "90% 잃고 900% 벌어야 본전, 2배 ETF가 가르쳐준 잔인한 수학",
+      "caption": "90% 잃으면 900% 벌어야 본전, 진짜입니다\n\n요즘 2배·3배 레버리지 ETF 많이들 하시는데요.\n수익도 2배지만 손실 회복은 그보다 훨씬 어려워요.\n손실이 커질수록 필요한 회복률은 기하급수로 늘어나거든요.\n\n레버리지 상품 고민 중이시라면 저장해두고 한 번 더 계산해보세요\n\n#재테크 #미국주식 #레버리지ETF #2배ETF #3배ETF #TQQQ #SOXL #투자원칙 #복리의역설 #손실회복 #주식투자 #재테크공부 #미국주식투자 #etf투자 #자산관리 #투자공부 #주식초보 #직장인투자 #곰곰아저씨 #GOMGOM\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/cf4ed8",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-07-19 07:36:27",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -587,7 +599,9 @@
           "lead_desc": "이메일 변경 시도, 2단계 인증 등 계좌 탈취를 막는 필수 체크 5가지 정리"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 1,
+      "lead": false
     }
   ]
 }
