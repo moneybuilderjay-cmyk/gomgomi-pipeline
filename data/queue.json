@@ -204,6 +204,18 @@
       "created": "2026-07-20 08:26:58",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260721-95c3cb",
+      "topic_id": "7e52cd",
+      "topic_title": "AMD가 마이크로소프트를 고객으로 데려온 진짜 이유",
+      "caption": "마이크로소프트가 엔비디아 대신 AMD를 골랐다고요?\n\nAI 칩 시장을 사실상 혼자 갖고 있던 엔비디아에게 처음으로 대형 고객이 다른 곳으로 갈아탄 사건이 생겼어요. AMD의 신형 AI 랙 '헬리오스'에 마이크로소프트가 새 구매자로 합류했거든요.\n\n돈이 갈 곳이 하나 더 생겼다는 건 경쟁이 진짜 시작됐다는 뜻이에요.\n\n이 흐름, 저장해두고 다음 실적 시즌에 다시 꺼내보세요 📌\n\n#미국주식 #AMD #엔비디아 #마이크로소프트 #AI칩 #반도체투자 #미국주식투자 #해외주식 #주식공부 #재테크 #월가 #서학개미 #AI반도체 #엔비디아독점 #직장인투자 #주식초보 #투자공부 #곰곰아저씨 #GOMGOM #주식뉴스\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/7e52cd",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-07-21 06:43:47",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -675,7 +687,9 @@
           "lead_desc": "정부가 지분을 보유 중이거나 검토 중인 미국 상장사 리스트와 핵심 쟁점 3줄 요약"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 2,
+      "lead": false
     }
   ]
 }
