@@ -216,6 +216,18 @@
       "created": "2026-07-21 06:43:47",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260722-4c8be9",
+      "topic_id": "d11a09",
+      "topic_title": "반도체 기업 통장에 107조원이 쌓인 진짜 이유, 트럼프 관세가 만든다",
+      "caption": "반도체 기업 통장에 107조원이 쌓였습니다. 실적은 좋은데 투자는 안 한다니, 이상하죠?\n\n범인은 미국의 반도체 관세 예고예요. 공장 짓는 데 2~3년 걸리는데, 관세율이 어떻게 정해질지 모르니 일단 현금부터 쌓아두는 겁니다.\n\n이게 남 얘기 같아도, 회사가 현금을 쌓아둘 때 상여금·채용도 같이 보수적으로 바뀔 수 있어요.\n\n저장해두고 관세 확정 소식 나올 때 다시 꺼내보세요 📌\n\n#미국주식 #반도체 #관세 #트럼프관세 #기업예금 #국내증시 #경제뉴스 #직장인재테크 #주식공부 #반도체수출 #투자공부 #경제공부 #사회초년생 #상여금 #설비투자 #증시이슈 #곰곰아저씨 #GOMGOM #재테크 #미국증시\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/d11a09",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-07-22 00:13:55",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -719,7 +731,9 @@
           "lead_desc": "국제유가 변동이 원/달러 환율과 국내 물가에 미치는 경로를 숫자 3개로 정리한 인포그래픽"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 1,
+      "lead": false
     }
   ]
 }
