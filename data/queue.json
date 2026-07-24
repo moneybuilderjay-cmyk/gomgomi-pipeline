@@ -240,6 +240,18 @@
       "created": "2026-07-23 06:41:07",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260724-6ab6f5",
+      "topic_id": "047a87",
+      "topic_title": "월 30만원, S&P500 vs 예금 3% vs 달러RP — 10년 뒤 차이는 얼마?",
+      "caption": "예금 3%, 진짜 안전한 걸까요?\n\n월 30만원씩 10년, 예금·달러RP·S&P500에 각각 넣어봤습니다. 결과는 최대 1,330만원 차이. 물가상승률까지 따지면 예금의 '안전'은 다시 생각해볼 문제입니다.\n\n숫자로 보는 비교, 저장해두고 필요할 때 다시 보세요 📌\n\n#재테크 #미국주식 #S&P500 #예금금리 #월급재테크 #적립식투자 #복리효과 #장기투자 #자산관리 #20대재테크 #30대재테크 #직장인재테크 #달러투자 #인덱스투자 #물가상승률 #실질금리 #곰곰아저씨 #미국주식투자 #투자공부 #재테크공부\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/047a87",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-07-24 06:39:32",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -807,7 +819,9 @@
           "lead_desc": "월 납입액만 입력하면 예금·S&P500·달러RP 10년 후 잔액을 비교해주는 엑셀 표"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 3,
+      "lead": false
     }
   ]
 }
