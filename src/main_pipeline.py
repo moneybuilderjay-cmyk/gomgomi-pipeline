@@ -13,6 +13,45 @@ def weekday_category(cfg):
     idx = (wd + 6) % 7  # 0=월 로 변환
     return cfg["weekday_categories"][idx]
 
+def commit_published_now(item_id):
+    """published/<item_id>를 즉시 커밋·푸시하고 raw URL 유효화를 확인한다.
+    성공 시 True → 같은 실행에서 바로 게시 가능. 실패 시 False → 기존처럼
+    워크플로 말미 Commit state가 커밋하고 다음 실행에서 게시(폴백)."""
+    import subprocess, requests as _rq
+
+    def git(*args):
+        return subprocess.run(["git", *args], cwd=BASE, capture_output=True, text=True)
+
+    git("config", "user.name", "gomgomi-bot")
+    git("config", "user.email", "bot@users.noreply.github.com")
+    git("add", "-A", os.path.join("published", item_id))
+    c = git("commit", "-m", f"host: {item_id}")
+    if c.returncode != 0 and "nothing to commit" not in (c.stdout + c.stderr):
+        print(f"[pipeline] host 커밋 실패 {item_id}: {(c.stderr or c.stdout)[:300]}")
+        return False
+    pushed = False
+    for _ in range(3):
+        if git("push").returncode == 0:
+            pushed = True
+            break
+        git("pull", "--rebase")
+    if not pushed:
+        print(f"[pipeline] host 푸시 실패 {item_id} — 다음 실행에서 게시")
+        return False
+    # raw URL 유효화 확인 (최대 60초). 캐시버스터로 확인해 CDN 404 캐시 오염 방지.
+    repo = os.environ.get("GITHUB_REPO", "")
+    branch = os.environ.get("GITHUB_BRANCH", "main")
+    url = f"https://raw.githubusercontent.com/{repo}/{branch}/published/{item_id}/card-1.jpg"
+    for _ in range(12):
+        try:
+            if _rq.head(f"{url}?t={int(time.time())}", timeout=10).status_code == 200:
+                return True
+        except Exception:
+            pass
+        time.sleep(5)
+    print(f"[pipeline] raw URL 유효화 미확인 {item_id} — 다음 실행에서 게시")
+    return False
+
 def main():
     cfg = collect.load_config()
     results = approve.process_updates()
@@ -113,15 +152,21 @@ def main():
     except Exception as e:
         print(f"[pipeline] quant 실패(계속): {e}")
 
-    # 3) 승인 건 → published/ 복사 (커밋은 워크플로가)
+    # 3) 승인 건 → published/ 복사 + 즉시 커밋·푸시
+    # 2026-07-25 개선: 예전엔 커밋을 워크플로 말미에 맡겨 승인→게시가 실행 2번(2시간+)
+    # 걸렸음. 이제 여기서 바로 커밋해 raw URL을 유효화하고 같은 실행의 4)에서 게시.
+    # 커밋/푸시/URL 확인 실패 시엔 기존 방식(다음 실행에서 게시)으로 폴백.
     just_copied = set()
     for item in state.get_items("approved"):
         dest = os.path.join(BASE, "published", item["id"])
         if not os.path.exists(dest):
             shutil.copytree(item["cards_dir"], dest)
             state.set_status(item["id"], "hosting")
-            just_copied.add(item["id"])
-            print(f"[pipeline] {item['id']} 호스팅 준비 (다음 실행에서 게시)")
+            if commit_published_now(item["id"]):
+                print(f"[pipeline] {item['id']} 호스팅 커밋 완료 — 이번 실행에서 게시 시도")
+            else:
+                just_copied.add(item["id"])
+                print(f"[pipeline] {item['id']} 호스팅 준비 (다음 실행에서 게시)")
 
     # 4) 호스팅 완료 건 → 게시
     # 2026-07-18 개선: ①실행당 1건만 게시(연속 게시로 IG API 한도 걸리는 것 방지)

@@ -1,5 +1,5 @@
 """Telegram 승인 플로우.
-- send_for_approval: 카드 이미지 앨범 + 캡션 + [승인/반려] 버튼 전송
+- send_for_approval: 카드 이미지 앨범 + 캡션 + 텍스트 답장 안내 전송 (버튼 없음)
 - process_updates: getUpdates 폴링해 콜백 반영 (게시 잡에서 호출)
 """
 import os, requests
@@ -21,15 +21,16 @@ def send_for_approval(item, card_paths):
         files[key] = open(p, "rb")
         media.append({"type": "photo", "media": f"attach://{key}"})
     _call("sendMediaGroup", data={"chat_id": chat, "media": __import__("json").dumps(media)}, files=files)
-    # 2) 캡션 + 승인 버튼
-    kb = {"inline_keyboard": [[
-        {"text": "✅ 승인", "callback_data": f"approve:{item['id']}"},
-        {"text": "❌ 반려", "callback_data": f"reject:{item['id']}"},
-    ]]}
+    # 2) 캡션 + 승인 안내
+    # 2026-07-25: 인라인 버튼 제거 — 콜백은 텔레그램이 짧게만 보관해 시간별 폴링에서
+    # 유실되는 경우가 많았음(눌러도 승인이 반영 안 됨). 텍스트 답장만 사용.
     text = (f"[승인 요청] {item['topic_title']}\n\n--- 캡션 ---\n{item['caption'][:900]}"
             f"\n\nID: {item['id']}"
-            f"\n(버튼이 안 되면 '승인 {item['id']}' / '반려 {item['id']}' / '재생성 {item['id']}'으로 답장)")
-    _call("sendMessage", json={"chat_id": chat, "text": text, "reply_markup": kb})
+            f"\n\n답장으로 처리해주세요 (ID 생략 시 가장 최근 대기 건):"
+            f"\n✅ 게시 → 승인 {item['id']}"
+            f"\n❌ 취소 → 반려 {item['id']}"
+            f"\n🔄 다시 제작 → 재생성 {item['id']}")
+    _call("sendMessage", json={"chat_id": chat, "text": text})
 
 def _handle_text(msg, results):
     """텍스트 답장 폴백 — 콜백 버튼은 텔레그램이 짧게만 보관해 폴링 주기상 유실됨.
