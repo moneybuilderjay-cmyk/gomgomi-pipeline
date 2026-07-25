@@ -19,6 +19,13 @@ def main():
         if not items:
             print(f"[fetch] {item_id} 큐에 없음 — 스킵")
             continue
+        # 2026-07-25 가드: awaiting_render가 아닌 항목은 절대 재처리하지 않는다.
+        # (.done 리네임이 유실된 옛 _urls.json이 published 건을 rendered로 되돌려
+        #  중복 승인요청·중복게시를 유발할 뻔한 사고 재발 방지)
+        if items[0].get("status") != "awaiting_render":
+            print(f"[fetch] {item_id} status={items[0].get('status')} — 스킵 (.done 처리)")
+            os.rename(path, path + ".done")
+            continue
         topic_id = items[0]["topic_id"]
         out_dir = os.path.join(BASE, "out", topic_id)
         os.makedirs(out_dir, exist_ok=True)
