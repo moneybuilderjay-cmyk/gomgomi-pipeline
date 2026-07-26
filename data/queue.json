@@ -188,10 +188,11 @@
       "caption": "90% 잃으면 900% 벌어야 본전, 진짜입니다\n\n요즘 2배·3배 레버리지 ETF 많이들 하시는데요.\n수익도 2배지만 손실 회복은 그보다 훨씬 어려워요.\n손실이 커질수록 필요한 회복률은 기하급수로 늘어나거든요.\n\n레버리지 상품 고민 중이시라면 저장해두고 한 번 더 계산해보세요\n\n#재테크 #미국주식 #레버리지ETF #2배ETF #3배ETF #TQQQ #SOXL #투자원칙 #복리의역설 #손실회복 #주식투자 #재테크공부 #미국주식투자 #etf투자 #자산관리 #투자공부 #주식초보 #직장인투자 #곰곰아저씨 #GOMGOM\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
       "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/cf4ed8",
       "n_cards": 9,
-      "status": "rendered",
+      "status": "pending_approval",
       "created": "2026-07-19 07:36:27",
       "lead": false,
-      "lead_title": null
+      "lead_title": null,
+      "resent_ts": 1785041856.4502373
     },
     {
       "id": "20260720-2d9e7d",
