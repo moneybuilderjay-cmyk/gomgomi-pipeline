@@ -267,6 +267,18 @@
       "created": "2026-07-25 06:38:30",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260727-fcc0aa",
+      "topic_id": "be9d27",
+      "topic_title": "월가 애널리스트들이 찜한 종목 3개, 나도 지금 살펴봐야 하는 이유",
+      "caption": "월가가 찜한 종목 3개, 이름만 외우고 계셨나요?\n\n애널리스트 리포트는 목표주가·투자의견보다 '근거 문단'이 진짜예요. 발행일 확인 안 하면 6개월 전 얘기로 오늘 투자하는 셈이고요. 다들 같은 종목 찍었다면 오히려 늦었는지부터 의심해보세요.\n\n오늘 앱 켜서 관심종목 리포트 한 번 열어보세요. 저장해두고 따라해보시길 👇\n\n#미국주식 #애널리스트리포트 #주식공부 #재테크 #투자공부 #월가 #목표주가 #미국주식투자 #사회초년생재테크 #주식초보 #리서치리포트 #장기투자 #투자전략 #곰곰아저씨 #미국증시 #주식앱활용법 #투자자세 #돈공부 #경제공부 #직장인재테크\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/be9d27",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-07-27 10:53:23",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -928,7 +940,9 @@
           "lead_desc": "날짜·시간(한국시각)·예상치·시장 영향도를 한 장에 정리한 캘린더"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 2,
+      "lead": false
     }
   ]
 }
