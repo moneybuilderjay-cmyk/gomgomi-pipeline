@@ -161,8 +161,9 @@ def maybe_run(cfg):
         if it["id"] == item["id"]:
             it["quant"] = True
     state._save(q)
-    approve.send_for_approval(item, paths)
-    print(f"[quant] 생성+승인요청: {content['title_lines']}")
+    approve.send_delivery(item, paths)
+    state.set_status(item["id"], "delivered")  # 2026-08-02: 자동 게시 제거 — 전달로 종결
+    print(f"[quant] 생성+카드·캡션 전달: {content['title_lines']}")
 
 def publish_allowed(item):
     """퀀트 건은 19시(KST) 이후에만 게시 — 본편성과 시간대 분리"""
