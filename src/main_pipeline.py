@@ -1,62 +1,39 @@
-"""v2 오케스트레이터 — 2시간마다 실행되며 상태를 전진시킨다.
+"""v2 오케스트레이터 — 매시 실행되며 상태를 전진시킨다.
 흐름: 후보 제안(1일 1회) → 사용자가 텔레그램에서 주제+무료자료 여부 선택
-     → 카드 생성/렌더 → 게시 승인 → 호스팅 커밋 → 게시
+     → 카드 생성/렌더 → 텔레그램으로 카드+전체 캡션 전달 (인스타 업로드는 수동)
+2026-08-02: 인스타 자동 게시 제거 — 파이프라인의 최종 산출물은 텔레그램 전달까지.
 """
-import os, sys, shutil, time
+import os, sys, time
 sys.path.insert(0, os.path.dirname(__file__))
-import collect, generate, render, state, approve, propose, publish, market, intelligence, dm, quant
+import collect, generate, render, state, approve, propose, market, intelligence, dm, quant
 
 BASE = os.path.join(os.path.dirname(__file__), "..")
+
+# 2026-08-02: 텔레그램 발송 허용 시간대 (KST). 이 밖에는 메시지가 나가는 단계를
+# 전부 보류하고 다음 허용 시간대 실행에서 처리한다. GitHub cron 지연으로 실행이
+# 새벽(00~02시 KST)까지 밀려 알림이 가던 문제를 크론 조정만으로는 못 막기 때문.
+DELIVER_START_KST = 8
+DELIVER_END_KST = 22
+
+def kst_hour():
+    return int(time.strftime("%H", time.gmtime(time.time() + 9 * 3600)))
+
+def quiet_hours():
+    return not (DELIVER_START_KST <= kst_hour() < DELIVER_END_KST)
 
 def weekday_category(cfg):
     wd = int(time.strftime("%w", time.gmtime(time.time() + 9 * 3600)))  # 0=일
     idx = (wd + 6) % 7  # 0=월 로 변환
     return cfg["weekday_categories"][idx]
 
-def commit_published_now(item_id):
-    """published/<item_id>를 즉시 커밋·푸시하고 raw URL 유효화를 확인한다.
-    성공 시 True → 같은 실행에서 바로 게시 가능. 실패 시 False → 기존처럼
-    워크플로 말미 Commit state가 커밋하고 다음 실행에서 게시(폴백)."""
-    import subprocess, requests as _rq
-
-    def git(*args):
-        return subprocess.run(["git", *args], cwd=BASE, capture_output=True, text=True)
-
-    git("config", "user.name", "gomgomi-bot")
-    git("config", "user.email", "bot@users.noreply.github.com")
-    git("add", "-A", os.path.join("published", item_id))
-    c = git("commit", "-m", f"host: {item_id}")
-    if c.returncode != 0 and "nothing to commit" not in (c.stdout + c.stderr):
-        print(f"[pipeline] host 커밋 실패 {item_id}: {(c.stderr or c.stdout)[:300]}")
-        return False
-    pushed = False
-    for _ in range(3):
-        if git("push").returncode == 0:
-            pushed = True
-            break
-        git("pull", "--rebase")
-    if not pushed:
-        print(f"[pipeline] host 푸시 실패 {item_id} — 다음 실행에서 게시")
-        return False
-    # raw URL 유효화 확인 (최대 60초). 캐시버스터로 확인해 CDN 404 캐시 오염 방지.
-    repo = os.environ.get("GITHUB_REPO", "")
-    branch = os.environ.get("GITHUB_BRANCH", "main")
-    url = f"https://raw.githubusercontent.com/{repo}/{branch}/published/{item_id}/card-1.jpg"
-    for _ in range(12):
-        try:
-            if _rq.head(f"{url}?t={int(time.time())}", timeout=10).status_code == 200:
-                return True
-        except Exception:
-            pass
-        time.sleep(5)
-    print(f"[pipeline] raw URL 유효화 미확인 {item_id} — 다음 실행에서 게시")
-    return False
-
 def main():
     cfg = collect.load_config()
     results = approve.process_updates()
     print(f"[pipeline] 콜백 반영: {results}")
-    q = state._load()
+
+    if quiet_hours():
+        print(f"[pipeline] 발송 보류 시간대(KST {kst_hour()}시) — 답장 반영만 하고 종료")
+        return
 
     # 1) 오늘 후보 없으면 제안 발송
     if not propose.has_proposal_today():
@@ -72,7 +49,7 @@ def main():
         propose.send_candidates(prop)
         print(f"[pipeline] 후보 {len(cands)}개 발송 ({cat['name']})")
 
-    # 2) 선택된 후보 → 콘텐츠 생성/렌더/승인요청
+    # 2) 선택된 후보 → 콘텐츠 생성/렌더/전달 준비
     q = state._load()
     for p in q.get("proposals", []):
         if p.get("status") == "selected":
@@ -105,7 +82,7 @@ def main():
             with open(os.path.join(job_dir, f"{item['id']}.json"), "w", encoding="utf-8") as f:
                 _json.dump({"item_id": item["id"], "topic_id": p["id"], "topic_title": cand["title"],
                             "lead": lead, "content": content}, f, ensure_ascii=False, indent=2)
-            approve.notify(f"🎨 카피 완성, 카드 생성 대기: {cand['title']}\n다음 카드 배치에서 힉스필드로 제작 후 승인 요청 드려요.")
+            approve.notify(f"🎨 카피 완성, 카드 생성 대기: {cand['title']}\n다음 카드 배치에서 힉스필드로 제작 후 카드+캡션을 보내드려요.")
             p2 = state._load()
             for pp in p2["proposals"]:
                 if pp["id"] == p["id"]:
@@ -113,98 +90,25 @@ def main():
             state._save(p2)
             print(f"[pipeline] 카피 생성 → 카드잡 저장: {cand['title']} (자료 {'O' if lead else 'X'})")
 
-    # 2.4) 승인 대기 리마인더 — 텔레그램 콜백은 24시간 후 만료되므로 버튼을 주기적으로 재전송
     import glob as _glob
 
-    # 2.3) 힉스필드 렌더 완료(rendered) 건 → 승인 요청
-    for item in state.get_items("rendered"):
-        paths = sorted(_glob.glob(os.path.join(BASE, "out", item["topic_id"], "card-*.jpg")))
-        if paths:
-            approve.send_for_approval(item, paths)
-            state.set_status(item["id"], "pending_approval")
-            # 2026-08-01 수정: 첫 승인 요청 시각을 resent_ts로 기록.
-            # 이전엔 미기록이라 리마인더가 created(카피 생성일, 며칠 전) 기준으로
-            # 20h 초과를 판정 → 첫 요청 직후 다음 실행에서 곧바로 중복 재전송됐음.
-            qq3 = state._load()
-            for it3 in qq3.get("items", []):
-                if it3["id"] == item["id"]:
-                    it3["resent_ts"] = time.time()
-            state._save(qq3)
-            print(f"[pipeline] 렌더 완료 → 승인 요청: {item['id']} ({len(paths)}장)")
+    # 3) 힉스필드 렌더 완료(rendered) 건 → 텔레그램으로 카드+전체 캡션 전달
+    # 2026-08-02: 승인/호스팅/게시 단계 제거. 구버전 상태(pending_approval/approved/
+    # hosting)로 남아 있던 건도 전체 캡션과 함께 한 번 재전달하고 delivered로 이관.
+    for st in ("rendered", "pending_approval", "approved", "hosting"):
+        for item in state.get_items(st):
+            paths = sorted(_glob.glob(os.path.join(BASE, "out", item["topic_id"], "card-*.jpg")))
+            if not paths:
+                continue
+            approve.send_delivery(item, paths)
+            state.set_status(item["id"], "delivered")
+            print(f"[pipeline] 카드+캡션 전달: {item['id']} ({len(paths)}장, {st} → delivered)")
 
-    now = time.time()
-    q = state._load()
-    changed = False
-    for it in q.get("items", []):
-        if it["status"] != "pending_approval":
-            continue
-        last = it.get("resent_ts") or time.mktime(time.strptime(it["created"], "%Y-%m-%d %H:%M:%S"))
-        if now - last > 20 * 3600:
-            try:
-                paths = sorted(_glob.glob(os.path.join(BASE, "out", it["topic_id"], "card-*.jpg")))
-                if paths:
-                    approve.send_for_approval(it, paths)
-                else:
-                    approve.notify(f"⏰ 승인 대기 중: {it['topic_title']}\nID: {it['id']} — 다음 실행에서 다시 안내드려요")
-                it["resent_ts"] = now
-                changed = True
-                print(f"[pipeline] 승인 요청 재전송: {it['id']}")
-            except Exception as e:
-                print(f"[pipeline] 재전송 실패 {it['id']}: {e}")
-    if changed:
-        state._save(q)
-
-    # 2.5) 화/목/토: HyperPass Quant 종목분석 → 곰곰이 재스킨 (QUANT_FEED_URL 설정 시)
+    # 4) 화/목/토: HyperPass Quant 종목분석 → 곰곰이 재스킨 (QUANT_FEED_URL 설정 시)
     try:
         quant.maybe_run(cfg)
     except Exception as e:
         print(f"[pipeline] quant 실패(계속): {e}")
-
-    # 3) 승인 건 → published/ 복사 + 즉시 커밋·푸시
-    # 2026-07-25 개선: 예전엔 커밋을 워크플로 말미에 맡겨 승인→게시가 실행 2번(2시간+)
-    # 걸렸음. 이제 여기서 바로 커밋해 raw URL을 유효화하고 같은 실행의 4)에서 게시.
-    # 커밋/푸시/URL 확인 실패 시엔 기존 방식(다음 실행에서 게시)으로 폴백.
-    just_copied = set()
-    for item in state.get_items("approved"):
-        dest = os.path.join(BASE, "published", item["id"])
-        if not os.path.exists(dest):
-            shutil.copytree(item["cards_dir"], dest)
-            state.set_status(item["id"], "hosting")
-            if commit_published_now(item["id"]):
-                print(f"[pipeline] {item['id']} 호스팅 커밋 완료 — 이번 실행에서 게시 시도")
-            else:
-                just_copied.add(item["id"])
-                print(f"[pipeline] {item['id']} 호스팅 준비 (다음 실행에서 게시)")
-
-    # 4) 호스팅 완료 건 → 게시
-    # 2026-07-18 개선: ①실행당 1건만 게시(연속 게시로 IG API 한도 걸리는 것 방지)
-    # ②게시 실패 시 크래시 대신 상태 보존 — 이전에 1건 게시 성공 후 다음 건에서
-    #   예외가 나면 전체가 죽어 Commit state가 스킵되고, 이미 게시된 건이
-    #   hosting으로 남아 중복 게시될 뻔한 사고(run #65)의 재발 방지.
-    published_this_run = 0
-    for item in state.get_items("hosting"):
-        if item["id"] in just_copied:
-            continue
-        if not quant.publish_allowed(item):
-            print(f"[pipeline] {item['id']} 퀀트 건 — 19시(KST) 이후 게시 대기")
-            continue
-        if published_this_run >= 1:
-            print(f"[pipeline] {item['id']} 게시 대기 — 실행당 1건 제한 (다음 실행에서 게시)")
-            continue
-        if os.path.exists(os.path.join(BASE, "published", item["id"])):
-            try:
-                media_id = publish.publish_carousel(item, item["n_cards"])
-            except Exception as e:
-                print(f"[pipeline] 게시 실패(상태 보존, 다음 실행에서 재시도): {item['id']} — {e}")
-                try:
-                    approve.notify(f"⚠️ 게시 실패, 다음 실행에서 재시도: {item['topic_title']}\n{str(e)[:300]}")
-                except Exception:
-                    pass
-                break
-            state.set_status(item["id"], "published")
-            published_this_run += 1
-            approve.notify(f"✅ 게시 완료: {item['topic_title']} (media {media_id})")
-            print(f"[pipeline] 게시 완료: {item['topic_title']}")
 
     # 5) 댓글 키워드 → 무료자료 비공개 답장
     try:
