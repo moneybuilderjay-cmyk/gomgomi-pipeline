@@ -1,6 +1,7 @@
-"""Telegram 승인 플로우.
-- send_for_approval: 카드 이미지 앨범 + 캡션 + 텍스트 답장 안내 전송 (버튼 없음)
-- process_updates: getUpdates 폴링해 콜백 반영 (게시 잡에서 호출)
+"""Telegram 전달 플로우.
+- send_delivery: 카드 이미지 앨범 + 전체 캡션(복붙용) 전송 — 파이프라인의 최종 산출물.
+  2026-08-02: 인스타 자동 게시 제거로 '승인 요청'이 '업로드 준비 완료' 전달로 바뀜.
+- process_updates: getUpdates 폴링해 텍스트 답장 반영 (주제 선택 / 재생성 / 완료 기록)
 """
 import os, requests
 
@@ -12,7 +13,7 @@ def _call(method, **kwargs):
     r.raise_for_status()
     return r.json()
 
-def send_for_approval(item, card_paths):
+def send_delivery(item, card_paths):
     chat = os.environ["TELEGRAM_CHAT_ID"]
     # 1) 카드 앨범 (최대 10장)
     media, files = [], {}
@@ -21,21 +22,25 @@ def send_for_approval(item, card_paths):
         files[key] = open(p, "rb")
         media.append({"type": "photo", "media": f"attach://{key}"})
     _call("sendMediaGroup", data={"chat_id": chat, "media": __import__("json").dumps(media)}, files=files)
-    # 2) 캡션 + 승인 안내
-    # 2026-07-25: 인라인 버튼 제거 — 콜백은 텔레그램이 짧게만 보관해 시간별 폴링에서
-    # 유실되는 경우가 많았음(눌러도 승인이 반영 안 됨). 텍스트 답장만 사용.
-    text = (f"[승인 요청] {item['topic_title']}\n\n--- 캡션 ---\n{item['caption'][:900]}"
-            f"\n\nID: {item['id']}"
-            f"\n\n답장으로 처리해주세요 (ID 생략 시 가장 최근 대기 건):"
-            f"\n✅ 게시 → 승인 {item['id']}"
-            f"\n❌ 취소 → 반려 {item['id']}"
-            f"\n🔄 다시 제작 → 재생성 {item['id']}")
+    # 2) 안내 메시지
+    text = (f"[업로드 준비 완료] {item['topic_title']}\n"
+            f"ID: {item['id']}\n\n"
+            f"바로 아래 메시지가 전체 캡션이에요 — 그대로 복사해서 인스타에 붙여넣으세요."
+            f"\n\n답장 (ID 생략 시 가장 최근 건):"
+            f"\n🔄 카드 다시 제작 → 재생성 {item['id']}"
+            f"\n✅ 업로드 마친 뒤 기록(선택) → 완료 {item['id']}")
     _call("sendMessage", json={"chat_id": chat, "text": text})
+    # 3) 전체 캡션 (복붙용 — 텔레그램 한도 4096자라 4000자 단위 분할)
+    cap = item["caption"]
+    for i in range(0, len(cap), 4000):
+        _call("sendMessage", json={"chat_id": chat, "text": cap[i:i + 4000]})
+
+send_for_approval = send_delivery  # 구 이름 호환 (main_generate.py 등에서 호출)
 
 def _handle_text(msg, results):
-    """텍스트 답장 폴백 — 콜백 버튼은 텔레그램이 짧게만 보관해 폴링 주기상 유실됨.
+    """텍스트 답장 처리 — 콜백 버튼은 텔레그램이 짧게만 보관해 폴링 주기상 유실됨.
     선택: "1"~"3"(자료O), "1x"~"3x"(자료X), "스킵"
-    승인: "승인" 또는 "승인 <ID>" / 반려: "반려" 또는 "반려 <ID>" (ID 생략 시 최근 대기 건)"""
+    재생성: "재생성" 또는 "재생성 <ID>" / 완료 기록: "완료"("승인") / 취소: "반려" (ID 생략 시 최근 건)"""
     import re, state
     txt = (msg.get("text") or "").strip().lower().replace(" ", "")
     if not txt:
@@ -63,7 +68,7 @@ def _handle_text(msg, results):
     m = re.fullmatch(r"재생성((20\d{6}-[0-9a-f]{6}))?", txt)
     if m:
         q = state._load()
-        pending = [i for i in q.get("items", []) if i.get("status") == "pending_approval"]
+        pending = [i for i in q.get("items", []) if i.get("status") in ("pending_approval", "delivered")]
         item_id = m.group(1)
         target = next((i for i in pending if i["id"] == item_id), None) if item_id else (pending[-1] if pending else None)
         if not target:
@@ -77,27 +82,27 @@ def _handle_text(msg, results):
         results[target["id"]] = "regenerate(text)"
         notify(f"🔄 재생성 예약: {target['topic_title']}\n다음 실행 때 새 카드로 다시 보내드려요.")
         return
-    m = re.fullmatch(r"(승인|반려|거절)((20\d{6}-[0-9a-f]{6}))?", txt)
+    m = re.fullmatch(r"(완료|승인|반려|거절)((20\d{6}-[0-9a-f]{6}))?", txt)
     if m:
         action = m.group(1)
         item_id = m.group(2)
         q = state._load()
-        pending = [i for i in q.get("items", []) if i.get("status") == "pending_approval"]
+        pending = [i for i in q.get("items", []) if i.get("status") in ("pending_approval", "delivered")]
         target = None
         if item_id:
             target = next((i for i in pending if i["id"] == item_id), None)
         elif pending:
             target = pending[-1]
         if not target:
-            notify(f"대상을 못 찾았어요. 대기 중: {', '.join(i['id'] for i in pending) or '없음'}\n'승인 <ID>' 형식으로 답장해주세요.")
+            notify(f"대상을 못 찾았어요. 대기 중: {', '.join(i['id'] for i in pending) or '없음'}\n'완료 <ID>' 형식으로 답장해주세요.")
             return
-        status = "approved" if action == "승인" else "rejected"
+        status = "done" if action in ("완료", "승인") else "rejected"
         state.set_status(target["id"], status)
         results[target["id"]] = f"{status}(text)"
-        notify(f"{'✅ 승인' if status == 'approved' else '❌ 반려'} 처리: {target['topic_title']} ({target['id']})")
+        notify(f"{'✅ 업로드 완료 기록' if status == 'done' else '❌ 취소 처리'}: {target['topic_title']} ({target['id']})")
 
 def process_updates():
-    """콜백 수집 → {item_id: 'approved'|'rejected'} 반환"""
+    """콜백 수집 → {item_id: 'done'|'rejected'} 반환"""
     import state
     results = {}
     offset_file = os.path.join(os.path.dirname(__file__), "..", "data", "tg_offset.txt")
@@ -106,7 +111,7 @@ def process_updates():
         offset = int(open(offset_file).read().strip() or 0)
     resp = _call("getUpdates", json={"offset": offset + 1, "timeout": 0,
                                      "allowed_updates": ["message", "callback_query"]})
-    print(f"[approve] \uc218\uc2e0 \uc5c5\ub370\uc774\ud2b8 {len(resp.get('result', []))}\uac74")
+    print(f"[approve] 수신 업데이트 {len(resp.get('result', []))}건")
     for upd in resp.get("result", []):
         offset = max(offset, upd["update_id"])
         print(f"[approve] update {upd['update_id']}: keys={list(upd.keys())}")
@@ -132,7 +137,7 @@ def process_updates():
             results[f"proposal:{pid}"] = f"sel {n} lead={lead}"
         elif ":" in data:
             action, item_id = data.split(":", 1)
-            status = "approved" if action == "approve" else "rejected"
+            status = "done" if action == "approve" else "rejected"
             state.set_status(item_id, status)
             results[item_id] = status
             try:  # 콜백이 오래되면 400 — 무시
