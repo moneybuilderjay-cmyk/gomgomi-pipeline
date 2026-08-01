@@ -122,6 +122,14 @@ def main():
         if paths:
             approve.send_for_approval(item, paths)
             state.set_status(item["id"], "pending_approval")
+            # 2026-08-01 수정: 첫 승인 요청 시각을 resent_ts로 기록.
+            # 이전엔 미기록이라 리마인더가 created(카피 생성일, 며칠 전) 기준으로
+            # 20h 초과를 판정 → 첫 요청 직후 다음 실행에서 곧바로 중복 재전송됐음.
+            qq3 = state._load()
+            for it3 in qq3.get("items", []):
+                if it3["id"] == item["id"]:
+                    it3["resent_ts"] = time.time()
+            state._save(qq3)
             print(f"[pipeline] 렌더 완료 → 승인 요청: {item['id']} ({len(paths)}장)")
 
     now = time.time()
