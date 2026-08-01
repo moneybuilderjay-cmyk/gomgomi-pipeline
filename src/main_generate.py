@@ -25,8 +25,9 @@ def main():
     item = state.add_item(topic["id"], topic["title"], caption, out_dir, len(paths))
     if os.environ.get("TELEGRAM_BOT_TOKEN"):
         import approve
-        approve.send_for_approval(item, paths)
-        print("Telegram 승인 요청 발송")
+        approve.send_delivery(item, paths)
+        state.set_status(item["id"], "delivered")  # 2026-08-02: 자동 게시 제거 — 전달로 종결
+        print("Telegram 카드+캡션 전달")
     else:
         print("TELEGRAM_BOT_TOKEN 없음 — 승인 요청 스킵 (로컬 테스트)")
     collect.mark_topic_done(topic["id"])
