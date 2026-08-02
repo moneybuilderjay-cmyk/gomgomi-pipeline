@@ -306,6 +306,18 @@
       "created": "2026-07-31 16:18:07",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260802-8f96c1",
+      "topic_id": "565fda",
+      "topic_title": "버크셔 주가 8개월 최고치, 근데 버핏은 왜 계속 현금만 쌓았을까",
+      "caption": "버크셔 해서웨이 주가가 오늘 8개월 최고치를 찍었어요. 미국주식 투자하는 분들이라면 다들 아는 그 회사, 워런 버핏의 버크셔 해서웨이입니다.\n\n근데 궁금하지 않으셨나요. 작년 폭락장 때 다들 저점 매수 외칠 때 버핏은 왜 현금만 쌓았을까요. 답은 간단해요. 쌀 때가 아니라 맞을 때 사는 거였습니다.\n\n오늘 카드는 버핏의 인내 원칙, 신고가에도 흔들리지 않는 이유를 담았어요. 미국주식 하는 친구한테 보내주세요. 폭락장 올 때마다 다시 꺼내 보게 저장해두시고요.\n\n#버핏 아저씨도 조급해하지 않는데 우리가 조급할 이유 없죠.\n\n#미국주식 #버크셔해서웨이 #워런버핏 #장기투자 #가치투자\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/565fda",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-08-02 07:53:22",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -1153,7 +1165,9 @@
           "lead_desc": "월 납입액별(30/50/100만원) 10년 후 예금 vs S&P500 예상 자산 비교표"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 1,
+      "lead": false
     }
   ]
 }
