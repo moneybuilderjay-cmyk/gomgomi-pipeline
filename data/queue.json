@@ -1197,7 +1197,9 @@
           "lead_desc": "달러-엔, 달러-원 변동이 내 해외주식 계좌 수익률에 실제로 어느 정도 영향을 주는지 간단 계산 예시 정리"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "selected",
+      "selected": 2,
+      "lead": false
     }
   ]
 }
