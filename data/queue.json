@@ -342,6 +342,18 @@
       "created": "2026-08-06 00:14:09",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260806-d2f0ce",
+      "topic_id": "4f4f11",
+      "topic_title": "블록(Block)이 직원 40% 잘라내고 실적이 더 좋아진 이유",
+      "caption": "미국주식, 블록(Block) 실적으로 본 AI 구조조정의 진짜 순서\n\n작년 직원 40%를 줄인다고 발표했을 때 다들 'AI가 사람 자른다'고 했어요. 그런데 최근 실적 발표를 보면 순서가 달랐습니다. 사람을 먼저 줄이고, AI는 그다음에 도입한 거예요. 결과는 매출 증가에 이익률 개선까지, 시장이 바로 반응했습니다.\n\n'AI가 내 일자리 뺏는다'는 공포, 순서를 바꿔서 보면 다르게 읽힐 수 있어요. 미국주식 하는 친구에게 보내주세요. 저장해두고 다음 실적 시즌에 다시 꺼내보세요.\n\n#미국주식 #블록주식 #캐시앱 #AI구조조정 #잭도시\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/4f4f11",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-08-06 03:45:19",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -1315,7 +1327,9 @@
           "lead_desc": "실적 발표일에 확인해야 할 매출·가이던스·컨센서스 갭 3가지 체크포인트 정리"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 2,
+      "lead": false
     }
   ]
 }
