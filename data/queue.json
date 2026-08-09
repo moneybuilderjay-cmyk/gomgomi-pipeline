@@ -366,6 +366,18 @@
       "created": "2026-08-07 08:33:11",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260809-2f6ae1",
+      "topic_id": "6d36b1",
+      "topic_title": "버핏 후계자가 현금 쌓아두다가 지금 움직인 이유",
+      "caption": "미국주식, 버핏이 3년간 안 산 이유가 있었습니다.\n\n버크셔 해서웨이가 이번 분기 실적을 발표하면서 그렉 아벨이 드디어 현금을 풀기 시작했다는 소식이 나왔어요. 4천억 달러 넘는 현금을 쌓아두고 몇 년을 버틴 이유, '조급하게 사지 않는다'는 원칙 하나였습니다. 시장이 흔들릴 때마다 '지금 안 사면 늦는다'는 조급함, 저부터 반성하게 되네요.\n\n조급할 때마다 다시 보게 저장해두세요. 미국주식 하는 친구한테도 보내주세요.\n\n#미국주식 #버크셔해서웨이 #워런버핏 #그렉아벨 #투자원칙\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/6d36b1",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-08-09 04:40:51",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -1433,7 +1445,9 @@
           "lead_desc": "정신적 회계, 현재편향 등 행동경제학 개념을 나의 소비패턴에 대입해보는 8문항 체크리스트"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 1,
+      "lead": false
     }
   ]
 }
