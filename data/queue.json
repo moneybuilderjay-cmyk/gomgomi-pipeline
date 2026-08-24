@@ -378,6 +378,18 @@
       "created": "2026-08-09 04:40:51",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260824-afad3b",
+      "topic_id": "4c93ce",
+      "topic_title": "트럼프가 6월에 메타 팔고 버크셔 산 이유, 지금 다시 보면 소름 돋는 타이밍",
+      "caption": "미국주식 트럼프 포트폴리오, 6월에 메타 팔고 버크셔 해서웨이 산 거 아세요?\n\n공개된 자산 신고서 보면 6월에 메타 지분 정리하고 버크셔 해서웨이 늘렸어요. 그 시기가 하필 미국 국채 금리가 계속 튀던 때라 우연이라 보기엔 타이밍이 너무 절묘합니다. 금리 오를 때 고밸류 성장주는 부담되고, 버핏식 현금부자 회사는 오히려 매력적이거든요.\n\n요즘 채권금리 다시 발작하고 있어서 그때 패턴이 또 먹히는지 지켜볼 타이밍이에요. 미국주식 하는 친구한테 보내주고, 나중에 다시 볼 수 있게 저장해두세요.\n\n#미국주식 #버크셔해서웨이 #메타주식 #국채금리 #트럼프포트폴리오\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/4c93ce",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-08-24 02:01:19",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -1897,7 +1909,9 @@
           "lead_desc": "이번 주 발표되는 주요 미국 경제지표(날짜·예상치·시장 영향도)를 체크박스 형태로 정리한 리스트"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 2,
+      "lead": false
     }
   ]
 }
