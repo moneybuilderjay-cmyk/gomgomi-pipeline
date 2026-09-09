@@ -390,6 +390,18 @@
       "created": "2026-08-24 02:01:19",
       "lead": false,
       "lead_title": null
+    },
+    {
+      "id": "20260909-b24c4c",
+      "topic_id": "5b36dc",
+      "topic_title": "820조 슈퍼예산, 반도체 훈풍 타는 종목군은 어디로 튈까",
+      "caption": "미국주식 마벨 테크놀로지가 올해 241% 오르며 반도체 사이클이 다시 주목받고 있습니다. 그 사이 국내에서는 내년 820조원 규모 슈퍼예산이 편성 중이고, 반도체·AI 인프라 예산 비중이 커졌습니다.\n\n두 흐름이 겹치는 지점에서 어떤 업종이 움직일지, 예산안에서 실제로 늘어난 항목이 무엇인지 숫자로 정리했습니다.\n\n예산안은 국회 통과 전까지 바뀔 수 있다는 점도 꼭 함께 봐야 합니다. 나중에 다시 확인하려면 지금 저장해두세요. 반도체 관심 있는 친구에게도 공유해주세요.\n\n#미국주식 #반도체주 #슈퍼예산 #마벨테크놀로지 #국내증시\n\n※ 정보 제공 목적이며 특정 상품 추천이 아닙니다.",
+      "cards_dir": "/home/runner/work/gomgomi-pipeline/gomgomi-pipeline/src/../out/5b36dc",
+      "n_cards": 0,
+      "status": "awaiting_render",
+      "created": "2026-09-09 06:06:52",
+      "lead": false,
+      "lead_title": null
     }
   ],
   "proposals": [
@@ -2391,7 +2403,9 @@
           "lead_desc": "내년 예산안에서 반도체·AI·인프라 등 투자자가 주목할 항목만 뽑은 1장 요약"
         }
       ],
-      "status": "awaiting_selection"
+      "status": "generated",
+      "selected": 3,
+      "lead": false
     }
   ]
 }
